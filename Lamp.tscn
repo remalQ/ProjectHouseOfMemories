@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bcgoj1nuhbp5a"]
+
+[ext_resource type="Script" uid="uid://wjq2jma54q53" path="res://lamp.gd" id="1_pe6pt"]
+[ext_resource type="Texture2D" uid="uid://bcv3gqdoh58jg" path="res://Lamp.png" id="1_yljkn"]
+
+[node name="Lamp" type="Area2D" unique_id=465602018]
+script = ExtResource("1_pe6pt")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=666858683]
+position = Vector2(-69.07999, -570.16)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("1_yljkn")
+centered = false
+
+[node name="InteractionPoint" type="Marker2D" parent="." unique_id=16714279]
+position = Vector2(1, 3)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1634258153]
+polygon = PackedVector2Array(-67, -35, -65, -51, -45, -58, -17, -65, -8, -65, -7, -423, -67, -431, -38, -569, 33, -570, 45, -535, 70, -435, 6, -422, 5, -66, 51, -53, 60, -44, 61, -34, 56, -25, 42, -20, 10, -14, -20, -14, -47, -17, -57, -19, -66, -30)

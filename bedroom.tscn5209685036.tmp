@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://dflhbohjtxkw"]
+
+[ext_resource type="Texture2D" uid="uid://baopjwo71co3s" path="res://Room.jpg" id="1_kpde0"]
+[ext_resource type="PackedScene" uid="uid://b7utqjxhognd" path="res://player.tscn" id="2_e18cj"]
+[ext_resource type="PackedScene" uid="uid://bcgoj1nuhbp5a" path="res://Lamp.tscn" id="3_e18cj"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_fkmp3"]
+
+[node name="Bedroom" type="Node2D" unique_id=2113247261]
+
+[node name="Background" type="Sprite2D" parent="." unique_id=793276551]
+z_index = -10
+texture = ExtResource("1_kpde0")
+centered = false
+
+[node name="Player" parent="." unique_id=1308950809 instance=ExtResource("2_e18cj")]
+
+[node name="Interactibles" type="Node2D" parent="." unique_id=621629001]
+
+[node name="Lamp" parent="Interactibles" unique_id=465602018 node_paths=PackedStringArray("player") instance=ExtResource("3_e18cj")]
+position = Vector2(1380, 432)
+player = NodePath("../../Player")
+
+[node name="Desk" type="Area2D" parent="Interactibles" unique_id=1443639577]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactibles/Desk" unique_id=1883688536]
+shape = SubResource("WorldBoundaryShape2D_fkmp3")
+
+[node name="InteractionPoint" type="Marker2D" parent="Interactibles/Desk" unique_id=473078669]
+
+[node name="Door" type="Area2D" parent="Interactibles" unique_id=1603378006]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactibles/Door" unique_id=2035629438]
+
+[node name="InteractionPoint" type="Marker2D" parent="Interactibles/Door" unique_id=1400202701]
+
+[node name="Foreground" type="Node2D" parent="." unique_id=185819408]

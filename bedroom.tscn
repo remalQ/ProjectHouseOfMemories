@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://dflhbohjtxkw"]
+
+[ext_resource type="Texture2D" uid="uid://baopjwo71co3s" path="res://Room.jpg" id="1_kpde0"]
+[ext_resource type="Script" uid="uid://c64fxgy6o587o" path="res://bedroom.gd" id="1_ui2oe"]
+[ext_resource type="PackedScene" uid="uid://b7utqjxhognd" path="res://player.tscn" id="2_e18cj"]
+[ext_resource type="PackedScene" uid="uid://bcgoj1nuhbp5a" path="res://Lamp.tscn" id="3_e18cj"]
+[ext_resource type="PackedScene" uid="uid://d3pn614rudi7" path="res://desk.tscn" id="5_o412v"]
+[ext_resource type="PackedScene" uid="uid://bejs28xl0t7yb" path="res://door.tscn" id="6_6d2g4"]
+[ext_resource type="Script" uid="uid://bpl0iffvybte" path="res://door.gd" id="7_885xx"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_onrkg"]
+vertices = PackedVector2Array(1777.7969, 943.9375, 1892.1094, 1067.0391, 25.179688, 1070.9375, 154.34375, 948.8203, 1373.8672, 939.14844, 1633.6016, 867.5703, 1629.9063, 858.34375, 1686.2969, 852.4375, 1486.4219, 889.09375, 1374.8672, 863.59375, 1436.0234, 861, 1475.75, 861.96875, 1484.5703, 864.0469, 520.9531, 862, 889.8203, 862, 951.40625, 864.60156, 954.4297, 932.8594, 1627.2969, 888.03125, 1508.9922, 901.78125, 227.70313, 859.03906, 1607.9219, 897.71875, 1547.1719, 905.0469)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4), PackedInt32Array(5, 6, 7, 0), PackedInt32Array(8, 4, 9, 10, 11, 12), PackedInt32Array(13, 14, 15, 16, 3), PackedInt32Array(17, 5, 0), PackedInt32Array(4, 8, 18), PackedInt32Array(3, 19, 13), PackedInt32Array(20, 17, 0), PackedInt32Array(21, 20, 0, 4), PackedInt32Array(4, 18, 21), PackedInt32Array(4, 3, 16)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(0, 1081, 147, 942, 223, 849, 521, 852, 890, 852, 961, 855, 964, 923, 1364, 929, 1365, 854, 1436, 851, 1477, 852, 1494, 856, 1496, 883, 1512, 892, 1547, 895, 1605, 888, 1619, 881, 1623, 868, 1619, 858, 1604, 851, 1690, 842, 1785, 937, 1915, 1077)])
+
+[node name="Bedroom" type="Node2D" unique_id=2113247261]
+script = ExtResource("1_ui2oe")
+
+[node name="Background" type="Sprite2D" parent="." unique_id=793276551]
+z_index = -10
+texture = ExtResource("1_kpde0")
+centered = false
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=221607210]
+navigation_polygon = SubResource("NavigationPolygon_onrkg")
+
+[node name="World" type="Node2D" parent="." unique_id=388808961]
+y_sort_enabled = true
+
+[node name="Player" parent="World" unique_id=1308950809 instance=ExtResource("2_e18cj")]
+position = Vector2(871, 915)
+scale = Vector2(0.5, 0.5)
+
+[node name="Interactibles" type="Node2D" parent="World" unique_id=621629001]
+
+[node name="Lamp" parent="World/Interactibles" unique_id=465602018 instance=ExtResource("3_e18cj")]
+position = Vector2(1560, 907)
+
+[node name="Desk" parent="World/Interactibles" unique_id=530609729 instance=ExtResource("5_o412v")]
+position = Vector2(1166, 952)
+
+[node name="Door" parent="World/Interactibles" unique_id=2022653886 instance=ExtResource("6_6d2g4")]
+position = Vector2(1822, 1015)
+script = ExtResource("7_885xx")
+
+[node name="Foreground" type="Node2D" parent="." unique_id=185819408]
