@@ -1,6 +1,18 @@
 extends Area2D
 
+
+@export var starts_on: bool = false
+
 @onready var interaction_point: Marker2D = $InteractionPoint
+@onready var lamp_light: PointLight2D = $PointLight2D
+@onready var glow_sprite: Sprite2D = $GlowSprite
+
+var is_on: bool = false
+
+
+func _ready() -> void:
+	is_on = starts_on
+	update_light()
 
 
 func _input_event(
@@ -8,27 +20,40 @@ func _input_event(
 	event: InputEvent,
 	_shape_idx: int
 ) -> void:
+	if not event is InputEventMouseButton:
+		return
 
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
 
-			var player_node: Node = get_tree().get_first_node_in_group("player")
+	if mouse_event.button_index != MOUSE_BUTTON_LEFT:
+		return
 
-			if player_node == null:
-				print("ОШИБКА: Player не найден")
-				return
+	if not mouse_event.pressed:
+		return
 
-			if not player_node is CharacterBody2D:
-				print("ОШИБКА: узел player не CharacterBody2D: ", player_node)
-				return
+	var player_node: Node = get_tree().get_first_node_in_group("player")
 
-			var player: CharacterBody2D = player_node as CharacterBody2D
+	if player_node == null:
+		print("ОШИБКА: Player не найден")
+		return
 
-			player.move_to_interactable(
-				interaction_point.global_position,
-				self
-			)
+	if not player_node.has_method("move_to_interactable"):
+		print("ОШИБКА: у Player нет move_to_interactable()")
+		return
+
+	player_node.call(
+		"move_to_interactable",
+		interaction_point.global_position,
+		self
+	)
 
 
 func interact() -> void:
-	print("Игрок подошёл к лампе!")
+	is_on = not is_on
+
+	update_light()
+
+
+func update_light() -> void:
+	lamp_light.enabled = is_on
+	glow_sprite.visible = is_on
