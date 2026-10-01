@@ -1,17 +1,37 @@
 [gd_scene format=3 uid="uid://b7utqjxhognd"]
 
-[ext_resource type="Texture2D" uid="uid://d06jwuhihe7sr" path="res://Player.png" id="1_4flbx"]
-[ext_resource type="Script" uid="uid://vf2yfsjo0s4d" path="res://player.gd" id="1_onrkg"]
+[ext_resource type="Script" uid="uid://vf2yfsjo0s4d" path="res://assets/Mattew/player.gd" id="1_onrkg"]
+[ext_resource type="Texture2D" uid="uid://d06jwuhihe7sr" path="res://assets/Mattew/Player.png" id="2_onrkg"]
+[ext_resource type="Texture2D" uid="uid://ds7ta1pliu82o" path="res://assets/Mattew/Player2.png" id="3_2hs0m"]
+[ext_resource type="Texture2D" uid="uid://cxrl3ddu2sftm" path="res://assets/Mattew/Player1.png" id="3_sweqy"]
+[ext_resource type="Texture2D" uid="uid://7do85rpt0rlm" path="res://assets/Mattew/Player3.png" id="4_1jxqw"]
+[ext_resource type="Script" uid="uid://dxl6pfxe3w278" path="res://flashlight.gd" id="6_1jxqw"]
+[ext_resource type="Texture2D" uid="uid://deha6syhksnh3" path="res://Flashlight_on.png" id="6_2hs0m"]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_2neny"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_sweqy"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_4flbx")
+"texture": ExtResource("3_sweqy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_2hs0m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_1jxqw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_onrkg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_1jxqw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_2hs0m")
 }],
 "loop": 1,
 "name": &"idle",
-"speed": 5.0
+"speed": 3.0
 }]
 
 [node name="Player" type="CharacterBody2D" unique_id=1308950809 groups=["player"]]
@@ -21,8 +41,10 @@ script = ExtResource("1_onrkg")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=840716057]
 position = Vector2(-148.33333, -868.3333)
-sprite_frames = SubResource("SpriteFrames_2neny")
+sprite_frames = SubResource("SpriteFrames_sweqy")
 animation = &"idle"
+frame = 4
+frame_progress = 0.888471
 centered = false
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=190367254]
@@ -33,3 +55,19 @@ polygon = PackedVector2Array(20, 631.66675, 23.333252, 648.3334, 46.666626, 648.
 path_desired_distance = 10.0
 target_desired_distance = 15.0
 path_max_distance = 1000.0
+
+[node name="FlashlightPivot" type="Node2D" parent="." unique_id=1019514753]
+position = Vector2(-135, -328.3333)
+rotation = 3.1415927
+script = ExtResource("6_1jxqw")
+
+[node name="FlashlightSprite" type="Sprite2D" parent="FlashlightPivot" unique_id=1682473470]
+position = Vector2(9.536743e-07, 0)
+scale = Vector2(0.075, 0.06)
+texture = ExtResource("6_2hs0m")
+
+[node name="LightOrigin" type="Marker2D" parent="FlashlightPivot" unique_id=619422981]
+position = Vector2(50.000053, 2.026558e-05)
+
+[node name="PointLight2D" type="PointLight2D" parent="FlashlightPivot/LightOrigin" unique_id=918367307]
+position = Vector2(51.66664, 0)

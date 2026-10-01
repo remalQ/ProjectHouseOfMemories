@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqhltfm1jwlf3"
-path="res://.godot/imported/Door.png-69503ba9367bcfa2ab8de46ca34fdb85.ctex"
+uid="uid://ynoiwa1r57hm"
+path="res://.godot/imported/Flashlight_off.png-fe01ba1498b52957894dccd3e1699782.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Door.png"
-dest_files=["res://.godot/imported/Door.png-69503ba9367bcfa2ab8de46ca34fdb85.ctex"]
+source_file="res://Flashlight_off.png"
+dest_files=["res://.godot/imported/Flashlight_off.png-fe01ba1498b52957894dccd3e1699782.ctex"]
 
 [params]
 

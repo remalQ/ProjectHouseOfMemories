@@ -12,6 +12,7 @@ var is_moving: bool = false
 func _physics_process(_delta: float) -> void:
 	if not is_moving:
 		velocity = Vector2.ZERO
+		sprite.play("idle")
 		return
 
 	if navigation_agent.is_navigation_finished():

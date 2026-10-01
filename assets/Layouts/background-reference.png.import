@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bcv3gqdoh58jg"
-path="res://.godot/imported/Lamp.png-5c9e4cc0abc84709f4c3719bd7557ba9.ctex"
+uid="uid://obefjxiiwhdb"
+path="res://.godot/imported/background-reference.png-29ad2982663e0afb57b3bb1651da2ebb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Lamp.png"
-dest_files=["res://.godot/imported/Lamp.png-5c9e4cc0abc84709f4c3719bd7557ba9.ctex"]
+source_file="res://assets/Layouts/background-reference.png"
+dest_files=["res://.godot/imported/background-reference.png-29ad2982663e0afb57b3bb1651da2ebb.ctex"]
 
 [params]
 
