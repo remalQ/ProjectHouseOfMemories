@@ -5,8 +5,12 @@
 [ext_resource type="PackedScene" uid="uid://b7utqjxhognd" path="res://player.tscn" id="2_e18cj"]
 [ext_resource type="Script" uid="uid://txcokyicctli" path="res://light_surface.gd" id="3_6d2g4"]
 [ext_resource type="PackedScene" uid="uid://bcgoj1nuhbp5a" path="res://Lamp.tscn" id="3_e18cj"]
+[ext_resource type="Script" uid="uid://dep04neplknnf" path="res://hidden_inscription.gd" id="4_j12bj"]
 [ext_resource type="PackedScene" uid="uid://d3pn614rudi7" path="res://desk.tscn" id="5_o412v"]
+[ext_resource type="PackedScene" uid="uid://chsyh8d8nar1q" path="res://inventory.tscn" id="8_4ken1"]
 [ext_resource type="Script" uid="uid://muyfwkyps66f" path="res://surface_spot.gd" id="11_dhkfy"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ojvcu"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_onrkg"]
 vertices = PackedVector2Array(1606.8516, 802.6797, 1600.5781, 789, 1643.7578, 789, 1492.5938, 835.89844, 1492.5938, 835.8906, 1505, 837.96875, 1905.9609, 912.3281, 1369.2891, 823.1094, 1368.2813, 787.8906, 1447.2813, 787.09375, 1448.1172, 816.4922, 1905.0469, 1067.0078, 10, 1069.9766, 10, 914.02344, 367.75, 785, 553.96875, 785, 941.28125, 821.0703, 940.27344, 785.96875, 1088.9609, 820, 1467.0938, 834, 1596.5234, 829.25, 1479.2891, 834, 1535.1328, 839.0078, 1569.7031, 836.9219)
@@ -55,6 +59,29 @@ scale = Vector2(1.1483253, 1.1477152)
 polygon = PackedVector2Array(1434.2625, 84.51573, 1560.5333, 0.8712962, 1672, 0.8712962, 1671.1292, 785.0379, 1435.1333, 675.2546)
 script = ExtResource("3_6d2g4")
 
+[node name="HiddenInscription" type="Node2D" parent="." unique_id=959990293 node_paths=PackedStringArray("surface_spot")]
+position = Vector2(498, 312)
+script = ExtResource("4_j12bj")
+surface_spot = NodePath("../SurfaceSpot")
+
+[node name="Label" type="Label" parent="HiddenInscription" unique_id=558009043]
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 39.0
+offset_bottom = 22.0
+theme_override_font_sizes/font_size = 32
+text = "СВЕТ ПОМНИТ"
+
+[node name="RevealPoint" type="Marker2D" parent="HiddenInscription" unique_id=1097238083]
+position = Vector2(108, 22)
+
+[node name="FloorBoundary" type="StaticBody2D" parent="." unique_id=230366017]
+physics_material_override = SubResource("PhysicsMaterial_ojvcu")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FloorBoundary" unique_id=297838328]
+build_mode = 1
+polygon = PackedVector2Array(362, 774, 1647, 775, 1918, 903, 1920, 1080, 0, 1080, 0, 905)
+
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=221607210]
 visible = false
 navigation_polygon = SubResource("NavigationPolygon_onrkg")
@@ -73,7 +100,9 @@ position = Vector2(1156, 833)
 lamp_reference = NodePath("../Lamp")
 
 [node name="Lamp" parent="World/Interactibles" unique_id=465602018 instance=ExtResource("3_e18cj")]
-position = Vector2(1524, 838)
+position = Vector2(1493, 842)
+
+[node name="Inventory" parent="." unique_id=610630715 instance=ExtResource("8_4ken1")]
 
 [node name="Foreground" type="Node2D" parent="." unique_id=185819408]
 
