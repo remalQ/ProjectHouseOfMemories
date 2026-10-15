@@ -69,5 +69,8 @@ texture = ExtResource("6_2hs0m")
 [node name="LightOrigin" type="Marker2D" parent="FlashlightPivot" unique_id=619422981]
 position = Vector2(50.000053, 2.026558e-05)
 
-[node name="PointLight2D" type="PointLight2D" parent="FlashlightPivot/LightOrigin" unique_id=918367307]
+[node name="PointFlashLight2D" type="PointLight2D" parent="FlashlightPivot/LightOrigin" unique_id=918367307]
 position = Vector2(51.66664, 0)
+
+[node name="InventoryAnchor" type="Marker2D" parent="." unique_id=1294948523]
+position = Vector2(-26.666656, -863.3333)

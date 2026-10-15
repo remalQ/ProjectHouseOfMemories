@@ -5,7 +5,8 @@
 [ext_resource type="Script" uid="uid://dn0nj52bm6mjg" path="res://interaction_label.gd" id="3_87xle"]
 
 [sub_resource type="Gradient" id="Gradient_pe6pt"]
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
+offsets = PackedFloat32Array(0.18509616, 1)
+colors = PackedColorArray(0.7415857, 0.7243976, 1.540184e-06, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_ojvcu"]
 gradient = SubResource("Gradient_pe6pt")
@@ -15,17 +16,6 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
-[sub_resource type="Gradient" id="Gradient_pe6pt"]
-offsets = PackedFloat32Array(0.18509616, 1)
-colors = PackedColorArray(0.7415857, 0.7243976, 1.540184e-06, 1, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_pe6pt"]
-gradient = SubResource("Gradient_pe6pt")
-width = 512
-height = 512
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-
 [node name="Lamp" type="Area2D" unique_id=465602018]
 script = ExtResource("1_pe6pt")
 
@@ -34,18 +24,6 @@ position = Vector2(-181, -585)
 scale = Vector2(0.35644534, 0.3789323)
 texture = ExtResource("1_yljkn")
 centered = false
-
-[node name="GlowSprite" type="Sprite2D" parent="." unique_id=1024794503]
-position = Vector2(-69.07999, -570.16)
-scale = Vector2(1.2, 1.2)
-texture = ExtResource("1_yljkn")
-centered = false
-
-[node name="PointLight2D" type="PointLight2D" parent="." unique_id=201050222]
-position = Vector2(1, -504)
-color = Color(0.6890635, 0.5895782, 0.08409385, 1)
-energy = 3.93
-texture = SubResource("GradientTexture2D_pe6pt")
 
 [node name="InteractionPoint" type="Marker2D" parent="." unique_id=16714279]
 position = Vector2(1, 3)

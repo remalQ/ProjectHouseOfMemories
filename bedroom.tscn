@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://dep04neplknnf" path="res://hidden_inscription.gd" id="4_j12bj"]
 [ext_resource type="PackedScene" uid="uid://d3pn614rudi7" path="res://desk.tscn" id="5_o412v"]
 [ext_resource type="PackedScene" uid="uid://chsyh8d8nar1q" path="res://inventory.tscn" id="8_4ken1"]
+[ext_resource type="Texture2D" uid="uid://blbsnsupvkmc3" path="res://key.png" id="9_dhkfy"]
+[ext_resource type="Texture2D" uid="uid://deha6syhksnh3" path="res://Flashlight_on.png" id="10_iwj3i"]
 [ext_resource type="Script" uid="uid://muyfwkyps66f" path="res://surface_spot.gd" id="11_dhkfy"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ojvcu"]
@@ -102,7 +104,12 @@ lamp_reference = NodePath("../Lamp")
 [node name="Lamp" parent="World/Interactibles" unique_id=465602018 instance=ExtResource("3_e18cj")]
 position = Vector2(1493, 842)
 
-[node name="Inventory" parent="." unique_id=610630715 instance=ExtResource("8_4ken1")]
+[node name="Inventory" parent="." unique_id=610630715 node_paths=PackedStringArray("player_reference") instance=ExtResource("8_4ken1")]
+scale = Vector2(0.5, 0.5)
+transform = Transform2D(0.5, 0, 0, 0.5, 0, 0)
+key_icon = ExtResource("9_dhkfy")
+flashlight_icon = ExtResource("10_iwj3i")
+player_reference = NodePath("../World/Player")
 
 [node name="Foreground" type="Node2D" parent="." unique_id=185819408]
 

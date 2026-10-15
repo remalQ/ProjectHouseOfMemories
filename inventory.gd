@@ -1,25 +1,67 @@
 extends CanvasLayer
 
+signal item_selected(item_id: String)
+
+const SLOT_COUNT: int = 6
+
 @export var debug_enabled: bool = true
 
-@onready var panel: PanelContainer = $Panel
-@onready var item_list: ItemList = $Panel/VBox/Items
-@onready var status_label: Label = $Panel/VBox/Status
+@export var key_icon: Texture2D
+@export var flashlight_icon: Texture2D
 
-# В логике используем постоянные ID.
-# Названия для игрока можно менять независимо от них.
-const ITEM_NAMES: Dictionary = {
-	"bedroom_key": "Ключ от спальни"
-}
+@onready var inventory_bar: Control = $InventoryBar
+@onready var slots_container: HBoxContainer = $InventoryBar/Slots
+
+@export var player_reference: CharacterBody2D
+@export_range(0.1, 1.0, 0.05) var inventory_scale: float = 0.45
+@export var head_gap: float = 8.0
+
+var inventory_anchor: Marker2D
 
 var item_ids: Array[String] = []
+var slot_buttons: Array[Button] = []
+var selected_item_id: String = ""
+
+var empty_style: StyleBoxFlat
+var hover_style: StyleBoxFlat
+var selected_style: StyleBoxFlat
 
 
 func _ready() -> void:
 	add_to_group("inventory")
 
-	panel.hide()
-	refresh_list()
+	create_styles()
+	create_slots()
+	refresh_slots()
+
+	# Убираем прежнюю привязку к нижнему краю экрана.
+	inventory_bar.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	inventory_bar.pivot_offset = Vector2.ZERO
+	inventory_bar.size = Vector2(960, 320)
+	inventory_bar.scale = Vector2.ONE * inventory_scale
+
+	if player_reference == null:
+		push_warning("Inventory: назначь Player Reference.")
+		inventory_bar.hide()
+		set_process(false)
+		set_process_input(false)
+		return
+
+	inventory_anchor = player_reference.get_node_or_null(
+		"InventoryAnchor"
+	) as Marker2D
+
+	if inventory_anchor == null:
+		push_warning("Inventory: внутри Player нет InventoryAnchor.")
+		inventory_bar.hide()
+		set_process(false)
+		set_process_input(false)
+		return
+
+	update_inventory_position()
+
+	# На время настройки показываем сразу.
+	inventory_bar.show()
 
 
 func _input(event: InputEvent) -> void:
@@ -27,7 +69,7 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event.is_action_pressed("toggle_inventory"):
-		panel.visible = not panel.visible
+		inventory_bar.visible = not inventory_bar.visible
 		get_viewport().set_input_as_handled()
 		return
 
@@ -35,20 +77,80 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event.is_action_pressed("debug_add_key"):
-		panel.show()
-
-		if add_item("bedroom_key"):
-			status_label.text = "Добавлен ключ от спальни."
-		else:
-			status_label.text = "Этот ключ уже есть."
-
+		add_item("bedroom_key")
+		inventory_bar.show()
 		get_viewport().set_input_as_handled()
 
 	elif event.is_action_pressed("debug_remove_item"):
-		if panel.visible:
-			remove_selected_item()
+		if inventory_bar.visible and selected_item_id != "":
+			remove_item(selected_item_id)
 
 		get_viewport().set_input_as_handled()
+
+
+func create_styles() -> void:
+	empty_style = make_style(Color(0.0, 0.0, 0.0, 0.0))
+	hover_style = make_style(Color(0.85, 0.9, 0.85, 0.1))
+	selected_style = make_style(Color(0.7, 0.85, 0.75, 0.2))
+
+	selected_style.border_color = Color(0.7, 0.85, 0.75, 0.7)
+	selected_style.set_border_width_all(1)
+
+
+func make_style(background_color: Color) -> StyleBoxFlat:
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+
+	style.bg_color = background_color
+	style.set_corner_radius_all(8)
+
+	style.content_margin_left = 14.0
+	style.content_margin_right = 14.0
+	style.content_margin_top = 14.0
+	style.content_margin_bottom = 14.0
+
+	return style
+
+
+func create_slots() -> void:
+	for index in range(SLOT_COUNT):
+		var button: Button = Button.new()
+
+		button.name = "Slot" + str(index + 1)
+		button.text = ""
+		button.focus_mode = Control.FOCUS_NONE
+		button.mouse_filter = Control.MOUSE_FILTER_STOP
+
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
+		button.expand_icon = true
+		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+		button.add_theme_stylebox_override("normal", empty_style)
+		button.add_theme_stylebox_override("hover", hover_style)
+		button.add_theme_stylebox_override("pressed", selected_style)
+		button.add_theme_stylebox_override("focus", empty_style)
+
+		button.pressed.connect(_on_slot_pressed.bind(index))
+
+		slots_container.add_child(button)
+		slot_buttons.append(button)
+
+
+func _on_slot_pressed(index: int) -> void:
+	var clicked_id: String = ""
+
+	if index < item_ids.size():
+		clicked_id = item_ids[index]
+
+	# Повторный клик снимает выбор.
+	if selected_item_id == clicked_id:
+		selected_item_id = ""
+	else:
+		selected_item_id = clicked_id
+
+	refresh_slots()
+	item_selected.emit(selected_item_id)
 
 
 func has_item(item_id: String) -> bool:
@@ -56,15 +158,19 @@ func has_item(item_id: String) -> bool:
 
 
 func add_item(item_id: String) -> bool:
-	if not ITEM_NAMES.has(item_id):
-		push_warning("Неизвестный предмет: " + item_id)
-		return false
-
 	if has_item(item_id):
 		return false
 
+	if item_ids.size() >= SLOT_COUNT:
+		print("Инвентарь заполнен.")
+		return false
+
+	if get_item_icon(item_id) == null:
+		push_warning("Не назначена иконка предмета: " + item_id)
+		return false
+
 	item_ids.append(item_id)
-	refresh_list()
+	refresh_slots()
 
 	return true
 
@@ -74,27 +180,76 @@ func remove_item(item_id: String) -> bool:
 		return false
 
 	item_ids.erase(item_id)
-	refresh_list()
+
+	if selected_item_id == item_id:
+		selected_item_id = ""
+		item_selected.emit("")
+
+	refresh_slots()
 
 	return true
 
 
-func remove_selected_item() -> void:
-	var selected: PackedInt32Array = item_list.get_selected_items()
+func get_selected_item() -> String:
+	return selected_item_id
 
-	if selected.is_empty():
-		status_label.text = "Сначала выбери предмет мышью."
+
+func get_item_icon(item_id: String) -> Texture2D:
+	match item_id:
+		"bedroom_key":
+			return key_icon
+		"flashlight":
+			return flashlight_icon
+		_:
+			return null
+
+
+func refresh_slots() -> void:
+	for index in range(slot_buttons.size()):
+		var button: Button = slot_buttons[index]
+		var item_id: String = ""
+
+		if index < item_ids.size():
+			item_id = item_ids[index]
+
+		button.icon = get_item_icon(item_id)
+		button.tooltip_text = ""
+
+		if item_id != "" and item_id == selected_item_id:
+			button.add_theme_stylebox_override(
+				"normal",
+				selected_style
+			)
+		else:
+			button.add_theme_stylebox_override(
+				"normal",
+				empty_style
+			)
+
+
+func _process(_delta: float) -> void:
+	if not is_instance_valid(inventory_anchor):
 		return
 
-	var item_id: String = item_ids[selected[0]]
-	var item_name: String = str(ITEM_NAMES[item_id])
-
-	if remove_item(item_id):
-		status_label.text = "Удалён предмет: " + item_name
+	update_inventory_position()
 
 
-func refresh_list() -> void:
-	item_list.clear()
+func update_inventory_position() -> void:
+	# Получаем положение маркера в координатах окна игры.
+	var viewport_position: Vector2 = (
+		inventory_anchor.get_global_transform_with_canvas().origin
+	)
 
-	for item_id in item_ids:
-		item_list.add_item(str(ITEM_NAMES[item_id]))
+	# Переводим его в координаты CanvasLayer инвентаря.
+	var anchor_position: Vector2 = (
+		get_final_transform().affine_inverse() * viewport_position
+	)
+
+	var displayed_size: Vector2 = (
+		inventory_bar.size * inventory_bar.scale
+	)
+
+	inventory_bar.position = anchor_position + Vector2(
+		-displayed_size.x * 0.5,
+		-displayed_size.y - head_gap
+	)
