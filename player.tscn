@@ -1,12 +1,12 @@
-[gd_scene format=3 uid="uid://b7utqjxhognd"]
+[gd_scene format=3 uid="uid://dxniywbplhw0i"]
 
-[ext_resource type="Script" uid="uid://vf2yfsjo0s4d" path="res://assets/Mattew/player.gd" id="1_onrkg"]
-[ext_resource type="Texture2D" uid="uid://d06jwuhihe7sr" path="res://assets/Mattew/Player.png" id="2_onrkg"]
-[ext_resource type="Texture2D" uid="uid://ds7ta1pliu82o" path="res://assets/Mattew/Player2.png" id="3_2hs0m"]
-[ext_resource type="Texture2D" uid="uid://cxrl3ddu2sftm" path="res://assets/Mattew/Player1.png" id="3_sweqy"]
-[ext_resource type="Texture2D" uid="uid://7do85rpt0rlm" path="res://assets/Mattew/Player3.png" id="4_1jxqw"]
-[ext_resource type="Script" uid="uid://dxl6pfxe3w278" path="res://flashlight.gd" id="6_1jxqw"]
-[ext_resource type="Texture2D" uid="uid://deha6syhksnh3" path="res://Flashlight_on.png" id="6_2hs0m"]
+[ext_resource type="Script" uid="uid://ctalfovebvi6h" path="res://scripts/characters/player.gd" id="1_onrkg"]
+[ext_resource type="Texture2D" uid="uid://dbhouekux862s" path="res://assets/characters/players/Player.png" id="2_onrkg"]
+[ext_resource type="Texture2D" uid="uid://dob7v5lippfvd" path="res://assets/characters/players/Player2.png" id="3_2hs0m"]
+[ext_resource type="Texture2D" uid="uid://dn7oyedayvpcf" path="res://assets/characters/players/Player1.png" id="3_sweqy"]
+[ext_resource type="Texture2D" uid="uid://bpv0sjkyn7xba" path="res://assets/characters/players/Player3.png" id="4_1jxqw"]
+[ext_resource type="Script" uid="uid://6ld1763mlw0s" path="res://scripts/characters/flashlight.gd" id="6_1jxqw"]
+[ext_resource type="Texture2D" uid="uid://cisj3ugkupwpj" path="res://assets/items/Flashlight_on.png" id="6_2hs0m"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_sweqy"]
 animations = [{
@@ -60,6 +60,7 @@ path_max_distance = 1000.0
 position = Vector2(-135, -328.3333)
 rotation = 3.1415927
 script = ExtResource("6_1jxqw")
+beam_energy = 0.0
 
 [node name="FlashlightSprite" type="Sprite2D" parent="FlashlightPivot" unique_id=1682473470]
 position = Vector2(9.536743e-07, 0)

@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://chsyh8d8nar1q"]
+[gd_scene format=3 uid="uid://ca4yjraxqarxr"]
 
-[ext_resource type="Texture2D" uid="uid://d06gic54oewx4" path="res://inventory.png" id="1_pohso"]
-[ext_resource type="Script" uid="uid://d0jg0002xyavt" path="res://inventory.gd" id="1_psafj"]
+[ext_resource type="Texture2D" uid="uid://c7l2u2y3m6oam" path="res://assets/ui/inventory.png" id="1_pohso"]
+[ext_resource type="Script" uid="uid://tyllkkc17vld" path="res://scripts/ui/inventory.gd" id="1_psafj"]
 
 [node name="Inventory" type="CanvasLayer" unique_id=347991809]
 layer = 10
@@ -12,6 +12,7 @@ inventory_scale = 0.65
 
 [node name="InventoryBar" type="Control" parent="." unique_id=1868584857]
 layout_mode = 3
+anchors_preset = 0
 offset_right = 540.0
 offset_bottom = 180.0
 

@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://bcgoj1nuhbp5a"]
+
+[ext_resource type="Script" uid="uid://wjq2jma54q53" path="res://assets/Interactibles/lamp.gd" id="1_pe6pt"]
+[ext_resource type="Texture2D" uid="uid://bcv3gqdoh58jg" path="res://assets/Interactibles/Lamp.png" id="1_yljkn"]
+[ext_resource type="Script" uid="uid://dn0nj52bm6mjg" path="res://interaction_label.gd" id="3_87xle"]
+
+[sub_resource type="Gradient" id="Gradient_pe6pt"]
+offsets = PackedFloat32Array(0.18509616, 1)
+colors = PackedColorArray(0.7415857, 0.7243976, 1.540184e-06, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ojvcu"]
+gradient = SubResource("Gradient_pe6pt")
+width = 768
+height = 768
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Lamp" type="Area2D" unique_id=465602018]
+script = ExtResource("1_pe6pt")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=666858683]
+position = Vector2(-181, -585)
+scale = Vector2(0.35644534, 0.3789323)
+texture = ExtResource("1_yljkn")
+centered = false
+
+[node name="InteractionPoint" type="Marker2D" parent="." unique_id=16714279]
+position = Vector2(1, 3)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1634258153]
+polygon = PackedVector2Array(-54, -45, -50, -50, -39, -57, -17, -65, -8, -65, -5, -79, -5, -373, -7, -383, -9, -389, -7, -394.46234, -4, -400, -6, -427, -69, -433, -36, -564, -13, -569, 19, -570, 37, -567, 45, -535, 70, -435, 63, -431, 7, -427, 7.0821686, -398.41125, 11, -388, 7.1563263, -372.6065, 8, -79, 12, -67, 27, -62, 49, -52, 56, -45, 58, -34, 53, -28, 41, -24, 11, -20, -16, -20, -37, -24, -48, -26, -55, -33)
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=639636690]
+position = Vector2(0, -504)
+color = Color(0.539701, 0.44821733, 0.1623309, 1)
+energy = 1.77
+shadow_enabled = true
+shadow_item_cull_mask = 2
+texture = SubResource("GradientTexture2D_ojvcu")
+texture_scale = 2.0
+
+[node name="GlowSprite" type="Sprite2D" parent="." unique_id=1769953313]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1425710865]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=210374240]
+polygon = PackedVector2Array(-52, -48, -55, -31, -27, -22, 13, -20, 43, -24, 54, -29, 58, -34, 56, -46, 42, -57, 11, -67, -15, -66, -39, -58)
+
+[node name="InteractionLabel" type="Label" parent="." unique_id=855740333 node_paths=PackedStringArray("interaction_point")]
+offset_left = 130.0
+offset_top = -537.0
+offset_right = 333.0
+offset_bottom = -506.0
+theme_override_colors/font_color = Color(0.7490196, 0.7490196, 0.7490196, 0.79607844)
+theme_override_colors/font_outline_color = Color(0.07683582, 0.07683582, 0.07683582, 0.83137256)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 22
+text = "Включить торшер"
+horizontal_alignment = 1
+script = ExtResource("3_87xle")
+interaction_point = NodePath("../InteractionPoint")

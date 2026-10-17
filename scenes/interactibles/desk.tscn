@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://d3pn614rudi7"]
+
+[ext_resource type="Texture2D" uid="uid://debgg75pfwdtd" path="res://assets/Interactibles/Table.png" id="1_ep8l3"]
+[ext_resource type="Script" uid="uid://dc3kkd6nf58jv" path="res://assets/Interactibles/desk.gd" id="1_t5y75"]
+[ext_resource type="Script" uid="uid://dn0nj52bm6mjg" path="res://interaction_label.gd" id="3_se7ci"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_pya0a"]
+closed = false
+polygon = PackedVector2Array(200, -25, 201, -241, 208, -241, 208, -257, -211, -256, -212, -241, -203, -240, -202, -26)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_7pl0t"]
+polygon = PackedVector2Array(-181, -281, -210, -256, 207, -257, 177, -281)
+
+[node name="Desk" type="Area2D" unique_id=530609729]
+script = ExtResource("1_t5y75")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=354698617]
+position = Vector2(-1.4999895, -162.5)
+scale = Vector2(0.30317682, 0.36187848)
+texture = ExtResource("1_ep8l3")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=944427975]
+position = Vector2(1.75, -153.5)
+polygon = PackedVector2Array(-203.75, 127.5, -204.75, -85.5, -212.75, -86.5, -212.75, -102.5, -183.75, -126.5, 175.25, -126.5, 205.25, -104.5, 205.25, -87.5, 199.25, -86.5, 198.25, 128.5, 185.25, 128.5, 184.25, 127.5, 184.25, 107.5, 176.25, 107.5, 174.25, 105.5, 174.25, 89.5, 163.25, 88.5, 162.25, 86.5, 162.25, -44.5, -76.75, -44.5, -76.75, 95.5, -88.75, 127.5)
+
+[node name="InteractionPoint" type="Marker2D" parent="." unique_id=1555543159]
+position = Vector2(2, -13)
+
+[node name="OccluderBack" type="LightOccluder2D" parent="." unique_id=1664868092]
+occluder = SubResource("OccluderPolygon2D_pya0a")
+occluder_light_mask = 2
+
+[node name="OccluderFront" type="LightOccluder2D" parent="." unique_id=1472944873]
+visible = false
+occluder = SubResource("OccluderPolygon2D_7pl0t")
+occluder_light_mask = 2
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=504153512]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=467678469]
+polygon = PackedVector2Array(186, -69, -203, -68, -204, -28, 205, -27)
+
+[node name="InteractionLabel" type="Label" parent="." unique_id=1398457002 node_paths=PackedStringArray("interaction_point")]
+offset_left = 80.0
+offset_top = -366.0
+offset_right = 256.0
+offset_bottom = -335.0
+theme_override_colors/font_color = Color(0.7490196, 0.7490196, 0.7490196, 0.79607844)
+theme_override_colors/font_outline_color = Color(0.07683582, 0.07683582, 0.07683582, 0.83137256)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 22
+text = "Осмотреть стол"
+horizontal_alignment = 1
+script = ExtResource("3_se7ci")
+interaction_point = NodePath("../InteractionPoint")

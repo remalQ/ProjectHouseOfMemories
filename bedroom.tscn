@@ -1,16 +1,16 @@
-[gd_scene format=3 uid="uid://dflhbohjtxkw"]
+[gd_scene format=3 uid="uid://bief2h5q8vg8w"]
 
-[ext_resource type="Script" uid="uid://c64fxgy6o587o" path="res://assets/Layouts/bedroom.gd" id="1_ui2oe"]
-[ext_resource type="Texture2D" uid="uid://obefjxiiwhdb" path="res://assets/Layouts/background-reference.png" id="2_885xx"]
-[ext_resource type="PackedScene" uid="uid://b7utqjxhognd" path="res://player.tscn" id="2_e18cj"]
-[ext_resource type="Script" uid="uid://txcokyicctli" path="res://light_surface.gd" id="3_6d2g4"]
-[ext_resource type="PackedScene" uid="uid://bcgoj1nuhbp5a" path="res://Lamp.tscn" id="3_e18cj"]
-[ext_resource type="Script" uid="uid://dep04neplknnf" path="res://hidden_inscription.gd" id="4_j12bj"]
-[ext_resource type="PackedScene" uid="uid://d3pn614rudi7" path="res://desk.tscn" id="5_o412v"]
-[ext_resource type="PackedScene" uid="uid://chsyh8d8nar1q" path="res://inventory.tscn" id="8_4ken1"]
-[ext_resource type="Texture2D" uid="uid://blbsnsupvkmc3" path="res://key.png" id="9_dhkfy"]
-[ext_resource type="Texture2D" uid="uid://deha6syhksnh3" path="res://Flashlight_on.png" id="10_iwj3i"]
-[ext_resource type="Script" uid="uid://muyfwkyps66f" path="res://surface_spot.gd" id="11_dhkfy"]
+[ext_resource type="Script" uid="uid://bbt4brnyoyld1" path="res://scripts/levels/bedroom.gd" id="1_ui2oe"]
+[ext_resource type="Texture2D" uid="uid://d2deyqrpt5a4e" path="res://assets/backgrounds/background-reference.png" id="2_885xx"]
+[ext_resource type="PackedScene" uid="uid://dxniywbplhw0i" path="res://player.tscn" id="2_e18cj"]
+[ext_resource type="Script" uid="uid://bgnvb63p1qwua" path="res://scripts/lighting/light_surface.gd" id="3_6d2g4"]
+[ext_resource type="PackedScene" uid="uid://42iovgn32pst" path="res://Lamp.tscn" id="3_e18cj"]
+[ext_resource type="Script" uid="uid://cpnj77eghew84" path="res://scripts/lighting/hidden_inscription.gd" id="4_j12bj"]
+[ext_resource type="PackedScene" uid="uid://bm6fhbq03rk21" path="res://desk.tscn" id="5_o412v"]
+[ext_resource type="PackedScene" uid="uid://ca4yjraxqarxr" path="res://inventory.tscn" id="8_4ken1"]
+[ext_resource type="Texture2D" uid="uid://qrjgyvtf0tcc" path="res://assets/items/key.png" id="9_dhkfy"]
+[ext_resource type="Texture2D" uid="uid://cisj3ugkupwpj" path="res://assets/items/Flashlight_on.png" id="10_iwj3i"]
+[ext_resource type="Script" uid="uid://blsby1ivchsk7" path="res://scripts/lighting/surface_spot.gd" id="11_dhkfy"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ojvcu"]
 
@@ -29,6 +29,7 @@ texture = ExtResource("2_885xx")
 centered = false
 
 [node name="LightSurfaces" type="Node2D" parent="." unique_id=1755128571]
+z_index = 1
 
 [node name="Backwall" type="Polygon2D" parent="LightSurfaces" unique_id=686033632]
 visible = false
@@ -92,16 +93,19 @@ navigation_polygon = SubResource("NavigationPolygon_onrkg")
 y_sort_enabled = true
 
 [node name="Player" parent="World" unique_id=1308950809 instance=ExtResource("2_e18cj")]
+z_index = 2
 position = Vector2(871, 915)
 scale = Vector2(0.5, 0.5)
 
 [node name="Interactibles" type="Node2D" parent="World" unique_id=621629001]
 
 [node name="Desk" parent="World/Interactibles" unique_id=530609729 node_paths=PackedStringArray("lamp_reference") instance=ExtResource("5_o412v")]
+z_index = 1
 position = Vector2(1156, 833)
 lamp_reference = NodePath("../Lamp")
 
 [node name="Lamp" parent="World/Interactibles" unique_id=465602018 instance=ExtResource("3_e18cj")]
+z_index = 1
 position = Vector2(1493, 842)
 
 [node name="Inventory" parent="." unique_id=610630715 node_paths=PackedStringArray("player_reference") instance=ExtResource("8_4ken1")]
@@ -116,7 +120,8 @@ player_reference = NodePath("../World/Player")
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=791976343]
 color = Color(0.30980393, 0.31764707, 0.4, 1)
 
-[node name="SurfaceSpot" type="PointLight2D" parent="." unique_id=1297138234 node_paths=PackedStringArray("player_reference", "surfaces_root")]
+[node name="SurfaceSpot" type="PointLight2D" parent="." unique_id=1297138234 node_paths=PackedStringArray("player_reference", "surfaces_root", "desk_reference")]
 script = ExtResource("11_dhkfy")
 player_reference = NodePath("../World/Player")
 surfaces_root = NodePath("../LightSurfaces")
+desk_reference = NodePath("../World/Interactibles/Desk")

@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://bcgoj1nuhbp5a"]
+[gd_scene format=3 uid="uid://42iovgn32pst"]
 
-[ext_resource type="Script" uid="uid://wjq2jma54q53" path="res://assets/Interactibles/lamp.gd" id="1_pe6pt"]
-[ext_resource type="Texture2D" uid="uid://bcv3gqdoh58jg" path="res://assets/Interactibles/Lamp.png" id="1_yljkn"]
-[ext_resource type="Script" uid="uid://dn0nj52bm6mjg" path="res://interaction_label.gd" id="3_87xle"]
+[ext_resource type="Script" uid="uid://boqsiqf00s4o" path="res://scripts/interactibles/lamp.gd" id="1_pe6pt"]
+[ext_resource type="Texture2D" uid="uid://v4n2smymtxv4" path="res://assets/props/Lamp.png" id="1_yljkn"]
+[ext_resource type="Script" uid="uid://b5lfrm6t2bhda" path="res://scripts/ui/interaction_label.gd" id="3_87xle"]
 
 [sub_resource type="Gradient" id="Gradient_pe6pt"]
 offsets = PackedFloat32Array(0.18509616, 1)
