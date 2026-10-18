@@ -23,15 +23,28 @@ func _process(_delta: float) -> void:
 	update_occluder()
 
 
+
 func update_occluder() -> void:
 	if light_reference == null:
 		return
 
-	var light_y: float = light_reference.global_position.y
-	var desk_y: float = global_position.y
+	if lamp_reference == null:
+		return
 
-	var light_is_in_front: bool = light_y > desk_y
+	var light_depth_point: Marker2D = (
+		lamp_reference.get_node_or_null("LightDepthPoint") as Marker2D
+	)
 
+	if light_depth_point == null:
+		push_warning("Desk: у торшера не найден LightDepthPoint.")
+		return
+
+	# Глубина определяется основанием торшера,
+	# а не высотой источника света.
+	var lamp_depth: float = light_depth_point.global_position.y
+	var desk_depth: float = global_position.y
+
+	var light_is_in_front: bool = lamp_depth > desk_depth
 
 	if light_is_in_front:
 		occluder_front.show()
@@ -39,6 +52,7 @@ func update_occluder() -> void:
 	else:
 		occluder_front.hide()
 		occluder_back.show()
+
 
 
 func _input_event(

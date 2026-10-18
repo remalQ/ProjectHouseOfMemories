@@ -5,6 +5,7 @@ extends PointLight2D
 
 # Сохранено для совместимости с Inspector (в этом алгоритме не используется).
 @export_flags_2d_physics var flashlight_blocker_mask: int = 4
+@export var desk_shadow_depth_bias: float = 35.0
 
 @export var near_distance: float = 60.0
 @export var far_distance: float = 2500.0
@@ -15,6 +16,8 @@ extends PointLight2D
 
 @export var desk_reference: Area2D
 @export var desk_depth_tolerance: float = 0.0
+@export var lamp_reference: Area2D
+@export var lamp_shadow_depth_bias: float = 0.0
 
 # Тень от силуэта стола на задней стене (упрощённая 2.5D).
 @export_range(0.0, 1.0, 0.05) var desk_shadow_strength: float = 1.0
@@ -209,10 +212,116 @@ func should_cast_desk_shadow(surface: LightSurface) -> bool:
 	)
 
 
+func should_cast_lamp_shadow(surface: LightSurface) -> bool:
+	if lamp_reference == null or player_reference == null:
+		return false
+
+	if surface.name != "Backwall":
+		return false
+
+	var caster: Node2D = (
+		lamp_reference.get_node_or_null("FlashlightShadowCaster") as Node2D
+	)
+	if caster == null:
+		return false
+
+	var depth_point: Marker2D = (
+		lamp_reference.get_node_or_null("LightDepthPoint") as Marker2D
+	)
+	if depth_point == null:
+		return false
+
+	var light_depth: float = player_reference.global_position.y
+	var lamp_depth: float = depth_point.global_position.y
+	var wall_depth: float = get_backwall_floor_y(surface)
+
+	return (
+		light_depth > lamp_depth + 1.0
+		and lamp_depth > wall_depth + 1.0
+	)
+
+
+func build_lamp_shadow_polygons(
+	light_world: Vector2,
+	wall_depth: float
+) -> Array[PackedVector2Array]:
+	var result: Array[PackedVector2Array] = []
+
+	if lamp_reference == null or player_reference == null:
+		return result
+
+	var caster: Node2D = (
+		lamp_reference.get_node_or_null("FlashlightShadowCaster") as Node2D
+	)
+	var depth_point: Marker2D = (
+		lamp_reference.get_node_or_null("LightDepthPoint") as Marker2D
+	)
+
+	if caster == null or depth_point == null:
+		return result
+
+	var light_depth: float = player_reference.global_position.y
+	var lamp_depth: float = depth_point.global_position.y
+
+	var effective_lamp_depth: float = (
+		lamp_depth - lamp_shadow_depth_bias
+	)
+
+	var depth_difference: float = light_depth - effective_lamp_depth
+	if depth_difference <= 1.0:
+		return result
+
+	var projection_factor: float = (
+		(light_depth - wall_depth) / depth_difference
+	)
+
+	var light_height: float = light_depth - light_world.y
+
+	for child in caster.get_children():
+		if not child is Polygon2D:
+			continue
+
+		var shape: Polygon2D = child as Polygon2D
+		if shape.polygon.size() < 3:
+			continue
+
+		var projected_polygon: PackedVector2Array = PackedVector2Array()
+
+		for vertex in shape.polygon:
+			var obstacle_world: Vector2 = shape.to_global(
+				vertex + shape.offset
+			)
+
+			var obstacle_height: float = (
+				effective_lamp_depth - obstacle_world.y
+			)
+
+			var projected_x: float = (
+				light_world.x
+				+ (obstacle_world.x - light_world.x) * projection_factor
+			)
+
+			var projected_height: float = (
+				light_height
+				+ (obstacle_height - light_height) * projection_factor
+			)
+
+			var projected_y: float = wall_depth - projected_height
+
+			projected_polygon.append(
+				to_local(Vector2(projected_x, projected_y))
+			)
+
+		result.append(projected_polygon)
+
+	return result
+
+
 # Приближённая 2.5D-проекция: экранные X/Y точек стола
 # переводим в координаты (X, глубина, высота), направляем луч
 # от линзы через силуэт стола и пересекаем плоскость задней стены.
 # Условная высота точки = глубина её основания - экранный Y.
+
 func build_desk_shadow_polygons(
 	light_world: Vector2,
 	wall_depth: float
@@ -230,15 +339,19 @@ func build_desk_shadow_polygons(
 
 	var light_depth: float = player_reference.global_position.y
 	var desk_depth: float = desk_reference.global_position.y
-	var depth_difference: float = light_depth - desk_depth
+
+	# Смещаем условную глубину всей геометрии стола.
+	var effective_desk_depth: float = desk_depth - desk_shadow_depth_bias
+
+	var depth_difference: float = light_depth - effective_desk_depth
 	if depth_difference <= 1.0:
 		return result
 
-	# Коэффициент перспективы > 1: тень на стене дальше от линзы,
-	# чем сам стол. Чем ближе игрок к столу, тем тень больше.
 	var projection_factor: float = (
-		(light_depth - wall_depth) / depth_difference
+		(light_depth - wall_depth)
+		/ depth_difference
 	)
+
 	var light_height: float = light_depth - light_world.y
 
 	for child in caster.get_children():
@@ -250,24 +363,36 @@ func build_desk_shadow_polygons(
 			continue
 
 		var projected_polygon: PackedVector2Array = PackedVector2Array()
+
 		for vertex in shape.polygon:
 			var obstacle_world: Vector2 = shape.to_global(vertex + shape.offset)
-			var obstacle_height: float = desk_depth - obstacle_world.y
+
+			# Высота рассчитывается относительно той же
+			# эффективной глубины, что и проекция.
+			var obstacle_height: float = (
+				effective_desk_depth - obstacle_world.y
+			)
 
 			var projected_x: float = (
 				light_world.x
 				+ (obstacle_world.x - light_world.x) * projection_factor
 			)
+
 			var projected_height: float = (
 				light_height
 				+ (obstacle_height - light_height) * projection_factor
 			)
+
 			var projected_y: float = wall_depth - projected_height
-			projected_polygon.append(to_local(Vector2(projected_x, projected_y)))
+
+			projected_polygon.append(
+				to_local(Vector2(projected_x, projected_y))
+			)
 
 		result.append(projected_polygon)
 
 	return result
+
 
 
 func update_surface_mask(surface: LightSurface, light_world: Vector2) -> void:
@@ -276,7 +401,10 @@ func update_surface_mask(surface: LightSurface, light_world: Vector2) -> void:
 		var world_vertex: Vector2 = surface.to_global(vertex + surface.offset)
 		local_polygon.append(to_local(world_vertex))
 
-	var cast_shadow: bool = should_cast_desk_shadow(surface)
+	var cast_desk_shadow: bool = should_cast_desk_shadow(surface)
+	var cast_lamp_shadow: bool = should_cast_lamp_shadow(surface)
+
+	var cast_shadow: bool = cast_desk_shadow or cast_lamp_shadow
 	var current_desk_transform: Transform2D = Transform2D.IDENTITY
 	if desk_reference != null:
 		current_desk_transform = desk_reference.global_transform
@@ -300,9 +428,21 @@ func update_surface_mask(surface: LightSurface, light_world: Vector2) -> void:
 	has_previous_mask = true
 
 	var shadow_polygons: Array[PackedVector2Array] = []
-	if cast_shadow:
-		shadow_polygons = build_desk_shadow_polygons(
-			light_world, get_backwall_floor_y(surface)
+
+	if cast_desk_shadow:
+		shadow_polygons.append_array(
+			build_desk_shadow_polygons(
+				light_world,
+				get_backwall_floor_y(surface)
+			)
+		)
+
+	if cast_lamp_shadow:
+		shadow_polygons.append_array(
+			build_lamp_shadow_polygons(
+				light_world,
+				get_backwall_floor_y(surface)
+			)
 		)
 	debug_shadow_pixels = 0
 	debug_shadow_polygons = shadow_polygons.size()

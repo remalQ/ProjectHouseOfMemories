@@ -101,7 +101,7 @@ scale = Vector2(0.5, 0.5)
 
 [node name="Desk" parent="World/Interactibles" unique_id=530609729 node_paths=PackedStringArray("lamp_reference") instance=ExtResource("5_o412v")]
 z_index = 1
-position = Vector2(1156, 833)
+position = Vector2(1155, 848)
 lamp_reference = NodePath("../Lamp")
 
 [node name="Lamp" parent="World/Interactibles" unique_id=465602018 instance=ExtResource("3_e18cj")]
@@ -120,8 +120,11 @@ player_reference = NodePath("../World/Player")
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=791976343]
 color = Color(0.30980393, 0.31764707, 0.4, 1)
 
-[node name="SurfaceSpot" type="PointLight2D" parent="." unique_id=1297138234 node_paths=PackedStringArray("player_reference", "surfaces_root", "desk_reference")]
+[node name="SurfaceSpot" type="PointLight2D" parent="." unique_id=1297138234 node_paths=PackedStringArray("player_reference", "surfaces_root", "desk_reference", "lamp_reference")]
 script = ExtResource("11_dhkfy")
 player_reference = NodePath("../World/Player")
 surfaces_root = NodePath("../LightSurfaces")
+desk_shadow_depth_bias = 50.0
 desk_reference = NodePath("../World/Interactibles/Desk")
+lamp_reference = NodePath("../World/Interactibles/Lamp")
+desk_shadow_strength = 0.9
