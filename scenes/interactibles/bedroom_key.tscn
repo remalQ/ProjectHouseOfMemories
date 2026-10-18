@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bp5y2ygpn0ur0"]
+
+[ext_resource type="Script" uid="uid://pp10wa3a4rh2" path="res://scripts/interactibles/bedroom_key.gd" id="1_gqsi3"]
+[ext_resource type="Texture2D" uid="uid://qrjgyvtf0tcc" path="res://assets/items/key.png" id="1_uyvch"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ojvcu"]
+size = Vector2(1136, 1124)
+
+[node name="BedroomKey" type="Area2D" unique_id=1203308119]
+scale = Vector2(0.03, 0.03)
+script = ExtResource("1_gqsi3")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=674891938]
+self_modulate = Color(1, 1, 1, 0.3529412)
+texture = ExtResource("1_uyvch")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=549795470]
+position = Vector2(6, 2)
+shape = SubResource("RectangleShape2D_ojvcu")
+
+[node name="InteractionPoint" type="Marker2D" parent="." unique_id=1241000764]

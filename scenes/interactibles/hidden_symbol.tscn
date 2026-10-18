@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://8uh3xq1be5nl"]
+
+[ext_resource type="Script" uid="uid://cpnj77eghew84" path="res://scripts/lighting/hidden_inscription.gd" id="1_72lha"]
+
+[node name="HiddenInscription" type="Node2D" unique_id=1598236048]
+script = ExtResource("1_72lha")
+
+[node name="Label" type="Label" parent="." unique_id=519938796]
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 39.0
+offset_bottom = 22.0
+theme_override_font_sizes/font_size = 32
+text = "СВЕТ ПОМНИТ"
+
+[node name="RevealPoint" type="Marker2D" parent="." unique_id=291392484]
+position = Vector2(108, 22)

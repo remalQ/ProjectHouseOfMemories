@@ -46,6 +46,12 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	var dialogue: Node = get_tree().get_first_node_in_group("dialogue_ui")
+
+	if dialogue != null:
+		if bool(dialogue.get("is_dialogue_active")):
+			return
+
 	if event.is_action_pressed("toggle_flashlight") and not event.is_echo():
 		set_equipped(not is_equipped)
 

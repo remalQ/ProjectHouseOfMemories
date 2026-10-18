@@ -60,11 +60,14 @@ func _ready() -> void:
 
 	update_inventory_position()
 
-	# На время настройки показываем сразу.
-	inventory_bar.show()
 
 
 func _input(event: InputEvent) -> void:
+	var dialogue: Node = get_tree().get_first_node_in_group("dialogue_ui")
+
+	if dialogue != null:
+		if bool(dialogue.get("is_dialogue_active")):
+			return
 	if event.is_echo():
 		return
 
@@ -75,17 +78,6 @@ func _input(event: InputEvent) -> void:
 
 	if not debug_enabled:
 		return
-
-	if event.is_action_pressed("debug_add_key"):
-		add_item("bedroom_key")
-		inventory_bar.show()
-		get_viewport().set_input_as_handled()
-
-	elif event.is_action_pressed("debug_remove_item"):
-		if inventory_bar.visible and selected_item_id != "":
-			remove_item(selected_item_id)
-
-		get_viewport().set_input_as_handled()
 
 
 func create_styles() -> void:
