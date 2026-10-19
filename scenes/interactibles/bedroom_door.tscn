@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dy0dhlho2kk67"]
+
+[node name="BedroomDoor" type="Area2D" unique_id=2122749564]
+
+[node name="ClickArea" type="CollisionPolygon2D" parent="." unique_id=1506189474]
+
+[node name="InteractionPoint" type="Marker2D" parent="." unique_id=1330344954]
+
+[node name="InteractionLabel" type="Label" parent="." unique_id=274302424]
+offset_right = 40.0
+offset_bottom = 23.0
