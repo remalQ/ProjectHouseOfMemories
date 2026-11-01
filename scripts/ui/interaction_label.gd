@@ -4,7 +4,7 @@ extends Label
 @export var fade_speed: float = 8.0
 @export var hint_enabled: bool = true
 
-var player: Node2D
+var player: Player
 
 
 func _ready() -> void:
@@ -21,18 +21,15 @@ func _ready() -> void:
 
 	modulate.a = 0.0
 
-	player = get_tree().get_first_node_in_group("player") as Node2D
+	player = Game.find_player()
 
 	if interaction_point == null:
 		push_warning("InteractionLabel: назначь Interaction Point.")
 		set_process(false)
 		return
 
-	if player == null or not player.has_method("can_interact_at"):
-		push_warning(
-			"InteractionLabel: не найден Player "
-			+ "с методом can_interact_at()."
-		)
+	if player == null:
+		push_warning("InteractionLabel: не найден Player в группе \"player\".")
 		set_process(false)
 
 
@@ -40,14 +37,7 @@ func _process(delta: float) -> void:
 	var target_alpha: float = 0.0
 
 	if hint_enabled and is_instance_valid(player):
-		var can_interact: bool = bool(
-			player.call(
-				"can_interact_at",
-				interaction_point.global_position
-			)
-		)
-
-		if can_interact:
+		if player.can_interact_at(interaction_point.global_position):
 			target_alpha = 1.0
 
 	modulate.a = move_toward(

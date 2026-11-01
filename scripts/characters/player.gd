@@ -1,3 +1,4 @@
+class_name Player
 extends CharacterBody2D
 
 @export var speed: float = 420.0
@@ -15,7 +16,7 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	# Блокируем передвижение во время диалога.
-	if is_dialogue_active():
+	if Game.is_dialogue_active():
 		velocity = Vector2.ZERO
 		is_moving = false
 
@@ -51,42 +52,24 @@ func _physics_process(_delta: float) -> void:
 
 
 
+# Взаимодействие с объектом, если игрок в пределах дистанции.
 func try_interact(
 	interaction_position: Vector2,
-	object: Node
+	object: Interactable
 ) -> void:
-	if is_dialogue_active():
-		return
-	if not is_instance_valid(object):
+	if Game.is_dialogue_active():
 		return
 
-	if not object.has_method("interact"):
+	if not is_instance_valid(object):
 		return
 
 	if not can_interact_at(interaction_position):
 		return
 
-	object.call("interact")
+	object.interact()
 
-
-# Совместимость с существующими скриптами Desk, Lamp и Door.
-# Автоматического движения здесь больше нет.
-func move_to_interactable(
-	interaction_position: Vector2,
-	object: Node
-) -> void:
-	try_interact(interaction_position, object)
 
 func can_interact_at(interaction_position: Vector2) -> bool:
 	return global_position.distance_to(
 		interaction_position
 	) <= interaction_distance
-
-func is_dialogue_active() -> bool:
-	var dialogue: Node = get_tree().get_first_node_in_group("dialogue_ui")
-
-	if dialogue == null:
-		return false
-
-	return bool(dialogue.get("is_dialogue_active"))
-	

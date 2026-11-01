@@ -1,5 +1,4 @@
-
-extends Area2D
+extends Interactable
 
 @export var lamp_reference: Area2D
 
@@ -9,7 +8,6 @@ extends Area2D
 @export var texture_middle_open: Texture2D
 @export var texture_bottom_open: Texture2D
 
-@onready var interaction_point: Marker2D = $InteractionPoint
 @onready var desk_sprite: Sprite2D = $Sprite2D
 
 @onready var occluder_front: LightOccluder2D = $OccluderFront
@@ -54,11 +52,10 @@ func _process(_delta: float) -> void:
 	update_occluder()
 
 
+# Выбирает задний или передний окклюдер: торшер может стоять
+# как за столом, так и перед ним.
 func update_occluder() -> void:
-	if light_reference == null:
-		return
-
-	if lamp_reference == null:
+	if lamp_reference == null or light_reference == null:
 		return
 
 	var light_depth_point: Marker2D = (
@@ -68,17 +65,12 @@ func update_occluder() -> void:
 	if light_depth_point == null:
 		return
 
-	var lamp_depth: float = light_depth_point.global_position.y
-	var desk_depth: float = global_position.y
+	var light_is_in_front: bool = (
+		light_depth_point.global_position.y > global_position.y
+	)
 
-	var light_is_in_front: bool = lamp_depth > desk_depth
-
-	if light_is_in_front:
-		occluder_front.show()
-		occluder_back.hide()
-	else:
-		occluder_front.hide()
-		occluder_back.show()
+	occluder_front.visible = light_is_in_front
+	occluder_back.visible = not light_is_in_front
 
 
 # Обрабатывает клик по конкретному ящику.
@@ -97,14 +89,10 @@ func _on_drawer_input_event(
 	if not event.pressed:
 		return
 
-	var player_node: Node = (
-		get_tree().get_first_node_in_group("player")
-	)
+	var player: Player = Game.find_player()
 
-	if not player_node is CharacterBody2D:
+	if player == null:
 		return
-
-	var player: CharacterBody2D = player_node as CharacterBody2D
 
 	# Используем существующую проверку расстояния.
 	if not player.can_interact_at(interaction_point.global_position):
@@ -146,29 +134,6 @@ func update_desk_texture() -> void:
 		desk_sprite.texture = next_texture
 	else:
 		push_warning("Desk: не назначена текстура состояния ящика.")
-
-
-# Сохраняем прежнюю возможность взаимодействия со столом.
-func _input_event(
-	_viewport: Node,
-	event: InputEvent,
-	_shape_idx: int
-) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			var player_node: Node = (
-				get_tree().get_first_node_in_group("player")
-			)
-
-			if not player_node is CharacterBody2D:
-				return
-
-			var player: CharacterBody2D = player_node as CharacterBody2D
-
-			player.move_to_interactable(
-				interaction_point.global_position,
-				self
-			)
 
 
 func interact() -> void:

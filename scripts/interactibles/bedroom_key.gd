@@ -1,64 +1,26 @@
-
-extends Area2D
+extends Interactable
 
 @export var item_id: String = "bedroom_key"
-
-@onready var interaction_point: Marker2D = $InteractionPoint
 
 var collected: bool = false
 
 
-func _input_event(
-	_viewport: Node,
-	event: InputEvent,
-	_shape_idx: int
-) -> void:
-	if collected:
-		return
-
-	if not event is InputEventMouseButton:
-		return
-
-	if event.button_index != MOUSE_BUTTON_LEFT:
-		return
-
-	if not event.pressed:
-		return
-
-	var player_node: Node = (
-		get_tree().get_first_node_in_group("player")
-	)
-
-	if not player_node is CharacterBody2D:
-		return
-
-	var player: CharacterBody2D = player_node as CharacterBody2D
-
-	player.move_to_interactable(
-		interaction_point.global_position,
-		self
-	)
+# Предмет исчезает после подбора — клики больше не принимаются.
+func _is_clickable() -> bool:
+	return not collected
 
 
 func interact() -> void:
 	if collected:
 		return
 
-	var inventory_node: Node = (
-		get_tree().get_first_node_in_group("inventory")
-	)
+	var inventory: Inventory = Game.find_inventory()
 
-	if inventory_node == null:
+	if inventory == null:
 		push_warning("BedroomKey: инвентарь не найден.")
 		return
 
-	if not inventory_node.has_method("add_item"):
-		push_warning("BedroomKey: отсутствует метод add_item().")
-		return
-
-	var added: bool = bool(
-		inventory_node.call("add_item", item_id)
-	)
+	var added: bool = inventory.add_item(item_id)
 
 	if not added:
 		print("BedroomKey: не удалось добавить предмет.")

@@ -264,6 +264,16 @@ func apply_plan(
 		for value in bucket["brightness"]:
 			bucket_brightness.append(value)
 
+		# Несколько поверхностей в одной маске-union: перекрытия
+		# полигонов на стыках берутся по максимуму яркости и
+		# выделяются полосой. Выравниваем яркость до единой, чтобы
+		# стыки (Top/Front) были неотличимы от остальной поверхности.
+		if bucket_brightness.size() > 1:
+			var uniform_brightness: float = bucket_brightness.max()
+			bucket_brightness.clear()
+			for surface in bucket_surfaces:
+				bucket_brightness.append(uniform_brightness)
+
 		var projected_pass: LightPass = _get_projected_pass(
 			_get_group_z_range(group)
 		)

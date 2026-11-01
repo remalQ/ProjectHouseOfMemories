@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 FpsMonitor="*res://scripts/debug/fps_monitor.gd"
+Game="*res://scripts/core/game.gd"
 
 [display]
 
@@ -60,10 +61,6 @@ toggle_inventory={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":16,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
-
-[physics]
-
-3d/physics_engine="Jolt Physics"
 
 [rendering]
 

@@ -51,11 +51,6 @@ centered = false
 position = Vector2(-148.33333, -568.3333)
 polygon = PackedVector2Array(18.333374, 640, 26.666626, 645, 53.333374, 646.6666, 130, 660, 158.33337, 660, 170, 655, 183.33337, 638.33325, 198.33337, 618.33325, 210, 608.33325, 216.66663, 596.6666, 218.33337, 585, 210, 573.33325, 208.33337, 563.33325, 88.333374, 563.33325, 81.666626, 566.6666, 80, 576.6666, 40, 601.6666, 21.666626, 616.6666, 16.666626, 625, 16.666626, 635)
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=639153432]
-path_desired_distance = 10.0
-target_desired_distance = 15.0
-path_max_distance = 1000.0
-
 [node name="FlashlightPivot" type="Node2D" parent="." unique_id=1019514753]
 position = Vector2(-135, -328.3333)
 rotation = 3.1415927

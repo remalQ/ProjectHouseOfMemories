@@ -1,10 +1,9 @@
+class_name Inventory
 extends CanvasLayer
 
 signal item_selected(item_id: String)
 
 const SLOT_COUNT: int = 6
-
-@export var debug_enabled: bool = true
 
 @export var key_icon: Texture2D
 @export var flashlight_icon: Texture2D
@@ -12,7 +11,7 @@ const SLOT_COUNT: int = 6
 @onready var inventory_bar: Control = $InventoryBar
 @onready var slots_container: HBoxContainer = $InventoryBar/Slots
 
-@export var player_reference: CharacterBody2D
+@export var player_reference: Player
 @export_range(0.1, 1.0, 0.05) var inventory_scale: float = 0.45
 @export var head_gap: float = 8.0
 
@@ -63,21 +62,15 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	var dialogue: Node = get_tree().get_first_node_in_group("dialogue_ui")
+	if Game.is_dialogue_active():
+		return
 
-	if dialogue != null:
-		if bool(dialogue.get("is_dialogue_active")):
-			return
 	if event.is_echo():
 		return
 
 	if event.is_action_pressed("toggle_inventory"):
 		inventory_bar.visible = not inventory_bar.visible
 		get_viewport().set_input_as_handled()
-		return
-
-	if not debug_enabled:
-		return
 
 
 func create_styles() -> void:
