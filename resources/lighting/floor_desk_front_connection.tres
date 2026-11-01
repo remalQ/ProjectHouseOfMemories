@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="LightSurfaceConnection" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/lighting/light_surface_connection.gd" id="1_lsc"]
+
+[resource]
+script = ExtResource("1_lsc")
+surface_a_name = "Floor"
+surface_b_name = "FrontLightSurface"
+bidirectional = true
+projection_mode = 0
+brightness_multiplier = 0.9
+size_multiplier = 1.15
+reverse_brightness_multiplier = 1.0
+reverse_size_multiplier = 1.0
+casts_shadow_on_transition = false
+override_depth = false
+depth_a = 0.0
+depth_b = 0.0

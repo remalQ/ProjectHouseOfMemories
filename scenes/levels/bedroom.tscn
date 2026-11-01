@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b8b4o1h612r7a" path="res://dialogue_test.gd" id="1_4tl26"]
 [ext_resource type="Texture2D" uid="uid://d2deyqrpt5a4e" path="res://assets/backgrounds/background-reference.png" id="2_g5usj"]
 [ext_resource type="Script" uid="uid://bgnvb63p1qwua" path="res://scripts/lighting/light_surface.gd" id="3_1mm6q"]
+[ext_resource type="Resource" uid="uid://dl3movq45l0yt" path="res://resources/lighting/backwall_profile.tres" id="4_g5usj"]
 [ext_resource type="PackedScene" uid="uid://8uh3xq1be5nl" path="res://scenes/interactibles/hidden_symbol.tscn" id="4_ivw44"]
 [ext_resource type="Script" uid="uid://cjsbrwymayops" path="res://scripts/lighting/hidden_sequence_puzzle.gd" id="5_rvq6o"]
 [ext_resource type="PackedScene" uid="uid://dxniywbplhw0i" path="res://scenes/characters/player.tscn" id="6_4sbds"]
@@ -14,6 +15,12 @@
 [ext_resource type="Texture2D" uid="uid://qrjgyvtf0tcc" path="res://assets/items/key.png" id="12_axnjx"]
 [ext_resource type="Texture2D" uid="uid://cisj3ugkupwpj" path="res://assets/items/Flashlight_on.png" id="13_ewnrd"]
 [ext_resource type="Script" uid="uid://blsby1ivchsk7" path="res://scripts/lighting/surface_spot.gd" id="14_uaa82"]
+[ext_resource type="Script" uid="uid://d4dst1ub6mf1y" path="res://scripts/lighting/light_surface_connection.gd" id="16_rvq6o"]
+[ext_resource type="Resource" uid="uid://bmhnsp7upcdt5" path="res://resources/lighting/desk_wall_connection.tres" id="17_4sbds"]
+[ext_resource type="Resource" path="res://resources/lighting/wall_floor_connection.tres" id="18_lwpgw"]
+[ext_resource type="Resource" path="res://resources/lighting/floor_desk_top_connection.tres" id="19_lwpgw"]
+[ext_resource type="Resource" path="res://resources/lighting/floor_desk_front_connection.tres" id="20_cfwc4"]
+[ext_resource type="Resource" uid="uid://teepkvy4qb5o" path="res://resources/lighting/desk_wall_front_connection.tres" id="21_cfwc4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dhkfy"]
 font_size = 12
@@ -50,6 +57,7 @@ scale = Vector2(1.1483253, 1.1477152)
 color = Color(1, 1, 1, 0.5254902)
 polygon = PackedVector2Array(317.85416, 84.51573, 1434.2625, 84.51573, 1435.1333, 675.2546, 316.98334, 676.12585)
 script = ExtResource("3_1mm6q")
+light_profile = ExtResource("4_g5usj")
 
 [node name="LeftWall" type="Polygon2D" parent="LightSurfaces" unique_id=1303596958]
 visible = false
@@ -179,11 +187,11 @@ color = Color(0.30980393, 0.31764707, 0.4, 1)
 script = ExtResource("14_uaa82")
 player_reference = NodePath("../World/Player")
 surfaces_root = NodePath("../LightSurfaces")
-desk_shadow_depth_bias = 50.0
 desk_reference = NodePath("../World/Interactibles/Desk")
 lamp_reference = NodePath("../World/Interactibles/Lamp")
-wall_shadow_size_multiplier = 1.0
+desk_shadow_depth_bias = 50.0
 desk_shadow_strength = 0.9
+surface_connections = Array[ExtResource("16_rvq6o")]([ExtResource("18_lwpgw"), ExtResource("17_4sbds"), ExtResource("21_cfwc4"), ExtResource("19_lwpgw"), ExtResource("20_cfwc4")])
 
 [editable path="HiddenInscription2"]
 [editable path="HiddenInscription3"]

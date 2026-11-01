@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://bgnvb63p1qwua" path="res://scripts/lighting/light_surface.gd" id="4_tm3w8"]
 [ext_resource type="Texture2D" uid="uid://c7mwll3tqmalp" path="res://assets/props/Table_MiddleOpen.png" id="4_vf3xh"]
 [ext_resource type="Texture2D" uid="uid://bmbw2l8lpf6n6" path="res://assets/props/Table_BottomOpen.png" id="5_7hob8"]
+[ext_resource type="Resource" path="res://resources/lighting/desk_light_profile.tres" id="6_prof"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_pya0a"]
 closed = false
@@ -76,6 +77,7 @@ interaction_point = NodePath("../InteractionPoint")
 visible = false
 polygon = PackedVector2Array(177, -281, 207, -257, -211, -256, -181, -281)
 script = ExtResource("4_tm3w8")
+light_profile = ExtResource("6_prof")
 spot_shape = Vector2(1.2, 0.5)
 brightness_multiplier = 1.15
 
@@ -83,12 +85,14 @@ brightness_multiplier = 1.15
 visible = false
 polygon = PackedVector2Array(-201, -239, -211, -240, -211, -256, 207, -257, 207, -240, 202.37398, -239.98431, 201, -25, 186, -25, 187, -239, -87, -239, -87, -28, -201, -28)
 script = ExtResource("4_tm3w8")
+light_profile = ExtResource("6_prof")
 brightness_multiplier = 0.95
 
 [node name="InsideLightSurface" type="Polygon2D" parent="." unique_id=979127896]
 visible = false
 polygon = PackedVector2Array(-87, -28, -75, -58, -75, -198, 165, -198, 164, -65, 176, -64, 176, -48, 178, -46, 186, -46, 187, -239, -87, -239)
 script = ExtResource("4_tm3w8")
+light_profile = ExtResource("6_prof")
 brightness_multiplier = 0.9
 
 [node name="FlashlightShadowCaster" type="Node2D" parent="." unique_id=1919596155]

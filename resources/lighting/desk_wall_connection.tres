@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="LightSurfaceConnection" format=3 uid="uid://bmhnsp7upcdt5"]
+
+[ext_resource type="Script" uid="uid://d4dst1ub6mf1y" path="res://scripts/lighting/light_surface_connection.gd" id="1_lsc"]
+
+[resource]
+script = ExtResource("1_lsc")
+surface_a_name = "Backwall"
+surface_b_name = "TopLightSurface"
+projection_mode = 1

@@ -14,6 +14,10 @@ config/name="ProjectHouseOfMemories"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+FpsMonitor="*res://scripts/debug/fps_monitor.gd"
+
 [display]
 
 window/size/viewport_width=1920

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="LightSurfaceProfile" format=3]
+
+[ext_resource type="Script" uid="uid://cl2qlty7ms2lh" path="res://scripts/lighting/light_surface_profile.gd" id="1_furn"]
+
+[resource]
+script = ExtResource("1_furn")
+light_group = 1
