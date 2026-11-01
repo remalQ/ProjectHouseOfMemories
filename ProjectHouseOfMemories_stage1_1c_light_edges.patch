@@ -1,0 +1,25 @@
+--- a/scripts/lighting/light_mask_builder.gd
++++ b/scripts/lighting/light_mask_builder.gd
+@@ -321,16 +321,12 @@
+ 
+ 	var spans: Array = []
+ 	for i in range(0, crossings.size() - 1, 2):
+-		var x_start: int = clampi(
+-			ceili(crossings[i] + half_size - 0.5),
+-			0,
+-			SPOT_RESOLUTION - 1
+-		)
+-		var x_end: int = clampi(
+-			floori(crossings[i + 1] + half_size - 0.5),
+-			0,
+-			SPOT_RESOLUTION - 1
+-		)
++		var x_start: int = ceili(crossings[i] + half_size - 0.5)
++		var x_end: int = floori(crossings[i + 1] + half_size - 0.5)
++		if x_end < 0 or x_start >= SPOT_RESOLUTION:
++			continue
++		x_start = maxi(0, x_start)
++		x_end = mini(SPOT_RESOLUTION - 1, x_end)
+ 		if x_end >= x_start:
+ 			spans.append([x_start, x_end])
+ 

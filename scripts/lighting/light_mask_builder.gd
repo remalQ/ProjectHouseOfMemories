@@ -176,17 +176,35 @@ static func find_spot_intersections(
 	return result
 
 
-# Хранит несколько последних созданных текстур масок. Текстуры
-# пересоздаются каждый кадр; без этой задержки рендерер может
-# обратиться к уже освобождённой текстуре ("Parameter \"t\" is null").
-static var _recent_textures: Array[Texture2D] = []
+# На GL Compatibility ImageTexture.update() не гарантирует обновление
+# содержимого light-texture atlas: GPU читает старое пятно, хотя
+# ImageTexture.get_image() уже показывает новые пиксели.
+# Поэтому каждый новый CPU-образ получит новую текстуру/RID.
+# Предыдущие текстуры остаются живыми несколько кадров, чтобы
+# renderer не обращался к уже освобождённым atlas entries.
+const TEXTURE_RETAIN_FRAMES: int = 8
+static var _retained_textures: Array[Dictionary] = []
 
-static func keep_texture_alive(texture: Texture2D) -> void:
-	_recent_textures.append(texture)
+static func upload_mask(receiver: PointLight2D, mask_image: Image) -> void:
+	var previous: Texture2D = receiver.texture
+	var replacement: ImageTexture = ImageTexture.create_from_image(mask_image)
+	receiver.texture = replacement
 
-	while _recent_textures.size() > 8:
-		_recent_textures.pop_front()
+	# Удерживать нужно именно заменённые объекты, а не фиксированное
+	# количество последних масок: за один кадр может смениться много проходов.
+	if previous != null:
+		_retained_textures.append({
+			"texture": previous,
+			"expire_frame": Engine.get_process_frames() + TEXTURE_RETAIN_FRAMES
+		})
 
+	var now: int = Engine.get_process_frames()
+	var first_alive: int = 0
+	while first_alive < _retained_textures.size() \
+			and _retained_textures[first_alive]["expire_frame"] <= now:
+		first_alive += 1
+	if first_alive > 0:
+		_retained_textures = _retained_textures.slice(first_alive)
 
 
 # Попиксельная сборка маски. Точки, попавшие в поверхности, получают
@@ -303,16 +321,12 @@ static func _polygon_spans_at_row(
 
 	var spans: Array = []
 	for i in range(0, crossings.size() - 1, 2):
-		var x_start: int = clampi(
-			ceili(crossings[i] + half_size - 0.5),
-			0,
-			SPOT_RESOLUTION - 1
-		)
-		var x_end: int = clampi(
-			floori(crossings[i + 1] + half_size - 0.5),
-			0,
-			SPOT_RESOLUTION - 1
-		)
+		var x_start: int = ceili(crossings[i] + half_size - 0.5)
+		var x_end: int = floori(crossings[i + 1] + half_size - 0.5)
+		if x_end < 0 or x_start >= SPOT_RESOLUTION:
+			continue
+		x_start = maxi(0, x_start)
+		x_end = mini(SPOT_RESOLUTION - 1, x_end)
 		if x_end >= x_start:
 			spans.append([x_start, x_end])
 

@@ -1,0 +1,97 @@
+--- a/scripts/lighting/light_mask_builder.gd
++++ b/scripts/lighting/light_mask_builder.gd
+@@ -176,17 +176,17 @@
+ 	return result
+ 
+ 
+-# Хранит несколько последних созданных текстур масок. Текстуры
+-# пересоздаются каждый кадр; без этой задержки рендерер может
+-# обратиться к уже освобождённой текстуре ("Parameter \"t\" is null").
+-static var _recent_textures: Array[Texture2D] = []
+-
+-static func keep_texture_alive(texture: Texture2D) -> void:
+-	_recent_textures.append(texture)
+-
+-	while _recent_textures.size() > 8:
+-		_recent_textures.pop_front()
+-
++# Обновляем уже назначенную GPU-текстуру маски без замены её RID.
++# На GL Compatibility частая подмена ImageTexture приводила к ошибкам
++# texture_remove_from_texture_atlas при освобождении старых ресурсов.
++# Все маски в текущем конвейере имеют постоянный размер/формат RGBA8.
++# Если текстуры ещё нет, создаём её ровно один раз.
++static func upload_mask(receiver: PointLight2D, mask_image: Image) -> void:
++	var current_texture: ImageTexture = receiver.texture as ImageTexture
++	if current_texture == null:
++		receiver.texture = ImageTexture.create_from_image(mask_image)
++	else:
++		current_texture.update(mask_image)
+ 
+ 
+ # Попиксельная сборка маски. Точки, попавшие в поверхности, получают
+--- a/scripts/lighting/light_pass.gd
++++ b/scripts/lighting/light_pass.gd
+@@ -91,12 +91,8 @@
+ 		1.0
+ 	)
+ 
+-	# Текстура пересоздаётся каждый кадр (обновление на месте
+-	# некорректно работает с масками этого проекта). Старая текстура
+-	# удерживается несколько кадров, чтобы рендерер не обратился
+-	# к освобождённой памяти.
+-	texture = ImageTexture.create_from_image(mask_image)
+-	LightMaskBuilder.keep_texture_alive(texture)
++	# Не заменяем GPU-текстуру, а обновляем её содержимое на месте.
++	LightMaskBuilder.upload_mask(self, mask_image)
+ 
+ 
+ # Интенсивность света прохода в мировой точке.
+--- a/scripts/lighting/surface_spot.gd
++++ b/scripts/lighting/surface_spot.gd
+@@ -607,12 +607,8 @@
+ 	if not mask_rebuilt:
+ 		return
+ 
+-	# Текстура пересоздаётся каждый кадр (обновление на месте
+-	# некорректно работает с масками этого проекта). Старая текстура
+-	# удерживается несколько кадров, чтобы рендерер не обратился
+-	# к освобождённой памяти.
+-	receiver.texture = ImageTexture.create_from_image(mask_image)
+-	LightMaskBuilder.keep_texture_alive(receiver.texture)
++	# Сохраняем тот же ImageTexture/RID и обновляем пиксели маски.
++	LightMaskBuilder.upload_mask(receiver, mask_image)
+ 
+ 
+ # Состояние теней для кэша строителя: бит 0 — тень стола, бит 1 — торшера.
+--- a/docs/lighting.md
++++ b/docs/lighting.md
+@@ -126,6 +126,19 @@
+ - Старые поля `LightSurface` (`spot_shape`, `spot_rotation_degrees`,
+   `brightness_multiplier`) действуют, пока профиль не переопределяет их.
+ 
++## Загрузка масок в GPU (стабилизация 2026-11-02)
++
++Основной `SurfaceSpot` и вспомогательные `LightPass` создают `ImageTexture`
++однократно при инициализации, а после пересчёта CPU-маски вызывают
++`LightMaskBuilder.upload_mask()`, обновляющий уже существующую текстуру через
++`ImageTexture.update(mask_image)` без замены RID. Старый статический буфер
++`_recent_textures` удалён: он не гарантировал жизненный цикл GPU-ресурсов.
++
++Стресс-тест (`res://tests/texture_stress.tscn`) проверяет неизменность RID и
++соответствие GPU-изображения CPU-маске на ряде пикселей. В Mesa llvmpipe,
++Godot 4.7 GL Compatibility, это устранило воспроизводимую ошибку
++`Parameter "t" is null`. На целевой видеокарте требуется повторить тест.
++
+ ## Известные упрощения (кандидаты этапа 5)
+ 
+ 1. **Привязка в `_ready()` по именам**: `Backwall`, `Floor`,
+@@ -135,6 +148,6 @@
+ 3. **Попиксельные маски 128×128 на CPU** — пересобираются только при
+    изменении входов (кэш), но остаются горячим местом при росте числа
+    источников; кандидат на перенос в шейдер.
+-4. Текстуры масок пересоздаются через `ImageTexture.create_from_image()`
+-   — осознанное решение, подтверждённое работой проекта, до отдельной
+-   оптимизации.
++4. GPU-текстуры масок обновляются на месте, но сами CPU-маски всё ещё
++   растеризуются в GDScript. При большом количестве источников потребуется
++   профилирование и, возможно, шейдерная реализация.

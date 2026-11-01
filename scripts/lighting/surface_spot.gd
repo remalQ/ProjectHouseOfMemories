@@ -607,12 +607,8 @@ func update_mask_for_light(
 	if not mask_rebuilt:
 		return
 
-	# Текстура пересоздаётся каждый кадр (обновление на месте
-	# некорректно работает с масками этого проекта). Старая текстура
-	# удерживается несколько кадров, чтобы рендерер не обратился
-	# к освобождённой памяти.
-	receiver.texture = ImageTexture.create_from_image(mask_image)
-	LightMaskBuilder.keep_texture_alive(receiver.texture)
+	# Сохраняем тот же ImageTexture/RID и обновляем пиксели маски.
+	LightMaskBuilder.upload_mask(receiver, mask_image)
 
 
 # Состояние теней для кэша строителя: бит 0 — тень стола, бит 1 — торшера.

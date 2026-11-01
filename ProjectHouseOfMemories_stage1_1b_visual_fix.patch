@@ -1,0 +1,48 @@
+--- a/scripts/lighting/light_mask_builder.gd
++++ b/scripts/lighting/light_mask_builder.gd
+@@ -176,17 +176,35 @@
+ 	return result
+ 
+ 
+-# Обновляем уже назначенную GPU-текстуру маски без замены её RID.
+-# На GL Compatibility частая подмена ImageTexture приводила к ошибкам
+-# texture_remove_from_texture_atlas при освобождении старых ресурсов.
+-# Все маски в текущем конвейере имеют постоянный размер/формат RGBA8.
+-# Если текстуры ещё нет, создаём её ровно один раз.
++# На GL Compatibility ImageTexture.update() не гарантирует обновление
++# содержимого light-texture atlas: GPU читает старое пятно, хотя
++# ImageTexture.get_image() уже показывает новые пиксели.
++# Поэтому каждый новый CPU-образ получит новую текстуру/RID.
++# Предыдущие текстуры остаются живыми несколько кадров, чтобы
++# renderer не обращался к уже освобождённым atlas entries.
++const TEXTURE_RETAIN_FRAMES: int = 8
++static var _retained_textures: Array[Dictionary] = []
++
+ static func upload_mask(receiver: PointLight2D, mask_image: Image) -> void:
+-	var current_texture: ImageTexture = receiver.texture as ImageTexture
+-	if current_texture == null:
+-		receiver.texture = ImageTexture.create_from_image(mask_image)
+-	else:
+-		current_texture.update(mask_image)
++	var previous: Texture2D = receiver.texture
++	var replacement: ImageTexture = ImageTexture.create_from_image(mask_image)
++	receiver.texture = replacement
++
++	# Удерживать нужно именно заменённые объекты, а не фиксированное
++	# количество последних масок: за один кадр может смениться много проходов.
++	if previous != null:
++		_retained_textures.append({
++			"texture": previous,
++			"expire_frame": Engine.get_process_frames() + TEXTURE_RETAIN_FRAMES
++		})
++
++	var now: int = Engine.get_process_frames()
++	var first_alive: int = 0
++	while first_alive < _retained_textures.size() \
++			and _retained_textures[first_alive]["expire_frame"] <= now:
++		first_alive += 1
++	if first_alive > 0:
++		_retained_textures = _retained_textures.slice(first_alive)
+ 
+ 
+ # Попиксельная сборка маски. Точки, попавшие в поверхности, получают
