@@ -18,6 +18,7 @@
 [ext_resource type="Resource" path="res://resources/lighting/wall_floor_connection.tres" id="18_lwpgw"]
 [ext_resource type="Resource" path="res://resources/lighting/floor_desk_top_connection.tres" id="19_lwpgw"]
 [ext_resource type="Resource" path="res://resources/lighting/floor_desk_front_connection.tres" id="20_cfwc4"]
+[ext_resource type="Script" uid="uid://c16gjad32ljfr" path="res://scripts/lighting/environment/environment_lighting_manager.gd" id="20_elm"]
 [ext_resource type="Resource" uid="uid://teepkvy4qb5o" path="res://resources/lighting/desk_wall_front_connection.tres" id="21_cfwc4"]
 [ext_resource type="Resource" path="res://resources/lighting/ceiling_floor_connection.tres" id="22_mfqfd"]
 [ext_resource type="Resource" path="res://resources/lighting/left_wall_floor_connection.tres" id="23_axnjx"]
@@ -39,6 +40,9 @@ font_size = 36
 [node name="Bedroom" type="Node2D" unique_id=2113247261 node_paths=PackedStringArray("dialogue_ui")]
 script = ExtResource("1_4tl26")
 dialogue_ui = NodePath("DialogueUI")
+
+[node name="EnvironmentLighting" type="Node" parent="." unique_id=990000001]
+script = ExtResource("20_elm")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=793276551]
 z_index = -10
@@ -145,10 +149,9 @@ scale = Vector2(0.5, 0.5)
 
 [node name="Interactibles" type="Node2D" parent="World" unique_id=621629001]
 
-[node name="Desk" parent="World/Interactibles" unique_id=530609729 node_paths=PackedStringArray("lamp_reference") instance=ExtResource("7_lwpgw")]
+[node name="Desk" parent="World/Interactibles" unique_id=530609729 instance=ExtResource("7_lwpgw")]
 z_index = 1
 position = Vector2(1155, 848)
-lamp_reference = NodePath("../Lamp")
 
 [node name="OldNote" parent="World/Interactibles/Desk" unique_id=210505461 instance=ExtResource("26_note")]
 position = Vector2(133, -270)

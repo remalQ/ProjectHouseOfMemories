@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://bsdocbfwul4k8"]
+
+[ext_resource type="Script" uid="uid://bloc8fqcq7pip" path="res://scripts/debug/light_source_test.gd" id="1_controller"]
+[ext_resource type="Script" uid="uid://c2bci7ramrt1p" path="res://scripts/lighting/environment/artificial_light_source.gd" id="2_source"]
+[ext_resource type="Resource" path="res://resources/lighting/environment/floor_lamp_profile.tres" id="3_lamp_profile"]
+[ext_resource type="Resource" path="res://resources/lighting/environment/candle_profile.tres" id="4_candle_profile"]
+[ext_resource type="Script" uid="uid://c16gjad32ljfr" path="res://scripts/lighting/environment/environment_lighting_manager.gd" id="5_manager"]
+[ext_resource type="Resource" path="res://resources/lighting/environment/emergency_profile.tres" id="6_emergency_profile"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_blocker"]
+polygon = PackedVector2Array(-30, -160, 30, -160, 30, 40, -30, 40)
+
+[node name="LightSourceTest" type="Node2D" unique_id=1076558239]
+position = Vector2(600, 400)
+script = ExtResource("1_controller")
+
+[node name="LightingManager" type="Node" parent="." unique_id=1194673920]
+script = ExtResource("5_manager")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=187680170]
+color = Color(0.16, 0.17, 0.22, 1)
+
+[node name="Surfaces" type="Node2D" parent="." unique_id=819801559]
+
+[node name="Floor" type="Polygon2D" parent="Surfaces" unique_id=1218010294]
+color = Color(0.85, 0.82, 0.75, 1)
+polygon = PackedVector2Array(-600, 100, 600, 100, 600, 400, -600, 400)
+
+[node name="Backwall" type="Polygon2D" parent="Surfaces" unique_id=1294771458]
+color = Color(0.7, 0.68, 0.62, 1)
+polygon = PackedVector2Array(-600, -400, 600, -400, 600, 100, -600, 100)
+
+[node name="Blocker" type="Polygon2D" parent="Surfaces" unique_id=939491221]
+position = Vector2(0, 120)
+color = Color(0.35, 0.3, 0.28, 1)
+polygon = PackedVector2Array(-30, -160, 30, -160, 30, 40, -30, 40)
+
+[node name="BlockerOccluder" type="LightOccluder2D" parent="Surfaces/Blocker" unique_id=450713552]
+occluder = SubResource("OccluderPolygon2D_blocker")
+
+[node name="Sources" type="Node2D" parent="." unique_id=1698511587]
+
+[node name="LampSource" type="Node2D" parent="Sources" unique_id=1284179659]
+position = Vector2(-126, 66)
+script = ExtResource("2_source")
+profile = ExtResource("3_lamp_profile")
+
+[node name="Light" type="PointLight2D" parent="Sources/LampSource" unique_id=649507949]
+position = Vector2(0, 2)
+
+[node name="CandleSource" type="Node2D" parent="Sources" unique_id=1085302464]
+position = Vector2(70, 41)
+script = ExtResource("2_source")
+profile = ExtResource("4_candle_profile")
+
+[node name="Light" type="PointLight2D" parent="Sources/CandleSource" unique_id=884413607]
+
+[node name="EmergencySource" type="Node2D" parent="Sources" unique_id=1800238493]
+position = Vector2(-60, -90)
+script = ExtResource("2_source")
+profile = ExtResource("6_emergency_profile")
+
+[node name="HUD" type="Label" parent="." unique_id=488289951]
+offset_left = -321.0
+offset_top = -361.0
+offset_right = 529.0
+offset_bottom = -261.0
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "1/2/3 — отдельные (лампа/свеча/аварийный), Space — все, P — отключение электричества (свеча и аварийный горят), O — включить все, Стрелки — множитель, F — сменить профиль"

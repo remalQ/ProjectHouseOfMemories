@@ -47,12 +47,10 @@ position = Vector2(2, -13)
 
 [node name="OccluderBack" type="LightOccluder2D" parent="." unique_id=1664868092]
 occluder = SubResource("OccluderPolygon2D_pya0a")
-occluder_light_mask = 2
 
 [node name="OccluderFront" type="LightOccluder2D" parent="." unique_id=1472944873]
 visible = false
 occluder = SubResource("OccluderPolygon2D_7pl0t")
-occluder_light_mask = 2
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=504153512]
 

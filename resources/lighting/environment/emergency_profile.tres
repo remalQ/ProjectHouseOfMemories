@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="LightProfile" format=3 uid="uid://du67p1twhqvyu"]
+
+[ext_resource type="Script" uid="uid://yawklalojhhr" path="res://scripts/lighting/environment/light_profile.gd" id="1_profile"]
+
+[sub_resource type="Gradient" id="Gradient_emergency"]
+colors = PackedColorArray(1, 0.15, 0.1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_emergency"]
+gradient = SubResource("Gradient_emergency")
+width = 512
+height = 512
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[resource]
+script = ExtResource("1_profile")
+color = Color(1, 0.2, 0.15, 1)
+energy = 1.1
+light_texture = SubResource("GradientTexture2D_emergency")
+texture_scale = 1.6
+behavior = 2
+flicker_strength = 0.45
+flicker_speed = 0.7
+groups = 4
+emissive_color = Color(1, 0.2, 0.15, 0.8)
+emissive_texture = SubResource("GradientTexture2D_emergency")
+emissive_scale = 0.1

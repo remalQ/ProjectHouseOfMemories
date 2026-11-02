@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://cug305jqvoa7c"]
+
+[ext_resource type="Script" uid="uid://dk2takp2algiv" path="res://scripts/debug/mask_probe.gd" id="1_probe"]
+
+[sub_resource type="OccluderPolygon2D" id="Occ"]
+polygon = PackedVector2Array(-40, -100, 40, -100, 40, 100, -40, 100)
+
+[sub_resource type="Gradient" id="Grad"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradTex"]
+gradient = SubResource("Grad")
+width = 512
+height = 512
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="MaskProbe" type="Node2D" unique_id=1884002665]
+script = ExtResource("1_probe")
+
+[node name="CM" type="CanvasModulate" parent="." unique_id=1135280203]
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="BG" type="Polygon2D" parent="." unique_id=218713828]
+color = Color(0.9, 0.9, 0.9, 1)
+polygon = PackedVector2Array(0, 0, 900, 0, 900, 600, 0, 600)
+
+[node name="Blocker" type="Polygon2D" parent="." unique_id=240421152]
+position = Vector2(400, 280)
+color = Color(0.3, 0.2, 0.1, 1)
+polygon = PackedVector2Array(-40, -100, 40, -100, 40, 100, -40, 100)
+
+[node name="Occ" type="LightOccluder2D" parent="Blocker" unique_id=1017547054]
+occluder = SubResource("Occ")
+
+[node name="Light" type="PointLight2D" parent="." unique_id=1680738114]
+position = Vector2(100, 280)
+color = Color(1, 0.9, 0.7, 1)
+energy = 1.5
+shadow_enabled = true
+texture = SubResource("GradTex")
+texture_scale = 2.0

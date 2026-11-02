@@ -1,20 +1,34 @@
 extends Interactable
+## Торшер: игровая оболочка над компонентом ArtificialLightSource.
+## Сам источник света и его настройки живут в компоненте и LightProfile.
 
-@onready var lamp_light: PointLight2D = $PointLight2D
-@onready var glow_sprite: Sprite2D = $GlowSprite
+const HINT_ON: String = "Выключить торшер"
+const HINT_OFF: String = "Включить торшер"
 
-var is_on: bool = false
+@onready var light_source: ArtificialLightSource = $ArtificialLightSource
+@onready var interaction_label: Label = $InteractionLabel
 
 
 func _ready() -> void:
-	update_light()
+	_update_hint()
 
 
 func interact() -> void:
-	is_on = not is_on
-	update_light()
+	light_source.toggle()
+	_update_hint()
 
 
-func update_light() -> void:
-	lamp_light.enabled = is_on
-	glow_sprite.visible = is_on
+## Горит ли лампа (для сюжетных проверок и будущего WorldState).
+func is_lit() -> bool:
+	return light_source.is_on
+
+
+## Обновляет подсказку под текущее состояние.
+func _update_hint() -> void:
+	if interaction_label == null:
+		return
+
+	if light_source.is_on:
+		interaction_label.text = HINT_ON
+	else:
+		interaction_label.text = HINT_OFF

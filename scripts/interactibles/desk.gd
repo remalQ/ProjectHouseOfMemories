@@ -1,7 +1,5 @@
 extends Interactable
 
-@export var lamp_reference: Area2D
-
 # Четыре визуальных состояния стола.
 @export var texture_closed: Texture2D
 @export var texture_top_open: Texture2D
@@ -17,20 +15,17 @@ extends Interactable
 @onready var middle_drawer: Area2D = $DrawersInteraction/MiddleDrawer
 @onready var bottom_drawer: Area2D = $DrawersInteraction/BottomDrawer
 
-var light_reference: PointLight2D
-
 # -1 = все ящики закрыты.
 # 0 = верхний, 1 = средний, 2 = нижний.
 var opened_drawer: int = -1
 
+var _sources: Array[ArtificialLightSource] = []
+
 
 func _ready() -> void:
-	if lamp_reference != null:
-		light_reference = (
-			lamp_reference.get_node_or_null("PointLight2D") as PointLight2D
-		)
-
-	update_occluder()
+	# Источники регистрируются в группе в _enter_tree — подключаемся
+	# отложенно, чтобы все источники комнаты уже были в дереве.
+	call_deferred("_connect_sources")
 
 	# Подключаем обработку нажатий на каждый ящик.
 	top_drawer.input_event.connect(
@@ -48,29 +43,75 @@ func _ready() -> void:
 	update_desk_texture()
 
 
-func _process(_delta: float) -> void:
-	update_occluder()
+## Подключается к источникам комнаты: окклюдеры обновляются
+## событийно (при вкл/выкл), без покадрового опроса.
+func _connect_sources() -> void:
+	_sources.clear()
+
+	for node in get_tree().get_nodes_in_group("artificial_light_sources"):
+		var source := node as ArtificialLightSource
+
+		if source == null:
+			continue
+
+		_sources.append(source)
+		source.state_changed.connect(_on_source_state_changed)
+
+	update_occluders()
 
 
-# Выбирает задний или передний окклюдер: торшер может стоять
-# как за столом, так и перед ним.
-func update_occluder() -> void:
-	if lamp_reference == null or light_reference == null:
+func _on_source_state_changed(
+	_source: ArtificialLightSource, _is_on: bool
+) -> void:
+	update_occluders()
+
+
+## Учитывает только ВКЛЮЧЁННЫЕ источники: выключенный торшер
+## не отбрасывает тень на стол.
+##
+## Ограничение Godot 4.7: окклюдеры нельзя раздать источникам по маскам
+## (любой shadow_item_cull_mask != 1 ломает тени), поэтому при источниках
+## с разных сторон используется передний окклюдер с предупреждением.
+func update_occluders() -> void:
+	var front_needed: bool = false
+	var back_needed: bool = false
+
+	for source in _sources:
+		if not is_instance_valid(source) or not source.is_on:
+			continue
+
+		if _source_is_in_front(source):
+			front_needed = true
+		else:
+			back_needed = true
+
+	if front_needed and back_needed:
+		push_warning(
+			"Desk: источники с разных сторон стола — используется передний окклюдер."
+		)
+		back_needed = false
+
+	if not front_needed and not back_needed:
+		# Ни один источник не включен — тени всё равно не видно,
+		# оставляем текущее состояние.
 		return
 
-	var light_depth_point: Marker2D = (
-		lamp_reference.get_node_or_null("LightDepthPoint") as Marker2D
-	)
+	occluder_front.visible = front_needed
+	occluder_back.visible = back_needed
 
-	if light_depth_point == null:
-		return
 
-	var light_is_in_front: bool = (
-		light_depth_point.global_position.y > global_position.y
-	)
+## Определяет сторону источника по условной глубине (LightDepthPoint
+## владельца, либо позиция самого источника).
+func _source_is_in_front(source: ArtificialLightSource) -> bool:
+	var owner_node := source.get_parent() as Node2D
+	var depth_point: Node2D = null
 
-	occluder_front.visible = light_is_in_front
-	occluder_back.visible = not light_is_in_front
+	if owner_node != null:
+		depth_point = owner_node.get_node_or_null("LightDepthPoint") as Node2D
+
+	var reference: Node2D = depth_point if depth_point != null else source
+
+	return reference.global_position.y > global_position.y
 
 
 # Обрабатывает клик по конкретному ящику.
