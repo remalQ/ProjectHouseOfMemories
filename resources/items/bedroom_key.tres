@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/inventory/item_definition.gd" id="1_def"]
+[ext_resource type="Texture2D" uid="uid://qrjgyvtf0tcc" path="res://assets/items/key.png" id="2_key"]
+
+[resource]
+resource_name = "bedroom_key"
+script = ExtResource("1_def")
+id = "bedroom_key"
+display_name = "Старый ключ"
+description = "Небольшой потемневший ключ. Похоже, он от дверцы старого шкафа."
+world_texture = ExtResource("2_key")
+inventory_icon = ExtResource("2_key")

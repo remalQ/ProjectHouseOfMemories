@@ -31,3 +31,25 @@ func is_dialogue_active() -> bool:
 		return false
 
 	return dialogue.is_dialogue_active
+
+
+# Менеджер осмотра из группы "inspection_manager" или null.
+func find_inspection() -> InspectionManager:
+	return get_tree().get_first_node_in_group(
+		"inspection_manager"
+	) as InspectionManager
+
+
+# Единая проверка доступности игрового мира: покрывает диалог,
+# режим осмотра и (в будущем) паузу. Вместо ручных проверок
+# отдельных флагов в каждом скрипте.
+func is_world_input_locked() -> bool:
+	if is_dialogue_active():
+		return true
+
+	var inspection: InspectionManager = find_inspection()
+
+	if inspection == null:
+		return false
+
+	return inspection.is_busy()

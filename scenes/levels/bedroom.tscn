@@ -12,8 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://bp5y2ygpn0ur0" path="res://scenes/interactibles/bedroom_key.tscn" id="9_pi3ty"]
 [ext_resource type="PackedScene" uid="uid://docxg8jdq2604" path="res://scenes/ui/dialogue_ui.tscn" id="10_ije61"]
 [ext_resource type="PackedScene" uid="uid://ca4yjraxqarxr" path="res://scenes/ui/inventory.tscn" id="11_mfqfd"]
-[ext_resource type="Texture2D" uid="uid://qrjgyvtf0tcc" path="res://assets/items/key.png" id="12_axnjx"]
-[ext_resource type="Texture2D" uid="uid://cisj3ugkupwpj" path="res://assets/items/Flashlight_on.png" id="13_ewnrd"]
 [ext_resource type="Script" uid="uid://blsby1ivchsk7" path="res://scripts/lighting/surface_spot.gd" id="14_uaa82"]
 [ext_resource type="Script" uid="uid://d4dst1ub6mf1y" path="res://scripts/lighting/light_surface_connection.gd" id="16_rvq6o"]
 [ext_resource type="Resource" uid="uid://bmhnsp7upcdt5" path="res://resources/lighting/desk_wall_connection.tres" id="17_4sbds"]
@@ -24,6 +22,8 @@
 [ext_resource type="Resource" path="res://resources/lighting/ceiling_floor_connection.tres" id="22_mfqfd"]
 [ext_resource type="Resource" path="res://resources/lighting/left_wall_floor_connection.tres" id="23_axnjx"]
 [ext_resource type="Resource" path="res://resources/lighting/right_wall_floor_connection.tres" id="24_ewnrd"]
+[ext_resource type="Script" uid="uid://6r3y8im5n5fr" path="res://scripts/interactibles/inspection/inspection_manager.gd" id="25_insm"]
+[ext_resource type="PackedScene" uid="uid://3pccgyangxwe" path="res://scenes/interactibles/old_note.tscn" id="26_note"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dhkfy"]
 font_size = 12
@@ -150,15 +150,13 @@ z_index = 1
 position = Vector2(1155, 848)
 lamp_reference = NodePath("../Lamp")
 
+[node name="OldNote" parent="World/Interactibles/Desk" unique_id=210505461 instance=ExtResource("26_note")]
+position = Vector2(133, -270)
+scale = Vector2(0.03, 0.03)
+
 [node name="Lamp" parent="World/Interactibles" unique_id=465602018 instance=ExtResource("8_cfwc4")]
 z_index = 1
-position = Vector2(1493, 842)
-
-[node name="InteractionLabel" parent="World/Interactibles/Lamp" index="6" unique_id=855740333]
-offset_left = -278.0
-offset_top = -550.0
-offset_right = -75.0
-offset_bottom = -519.0
+position = Vector2(1533, 845)
 
 [node name="BedroomKey" parent="World/Interactibles" unique_id=1203308119 instance=ExtResource("9_pi3ty")]
 position = Vector2(379, 800)
@@ -168,9 +166,10 @@ position = Vector2(379, 800)
 [node name="Inventory" parent="." unique_id=610630715 node_paths=PackedStringArray("player_reference") instance=ExtResource("11_mfqfd")]
 scale = Vector2(0.5, 0.5)
 transform = Transform2D(0.5, 0, 0, 0.5, 0, 0)
-key_icon = ExtResource("12_axnjx")
-flashlight_icon = ExtResource("13_ewnrd")
 player_reference = NodePath("../World/Player")
+
+[node name="InspectionManager" type="Node" parent="." unique_id=459499382]
+script = ExtResource("25_insm")
 
 [node name="Foreground" type="Node2D" parent="." unique_id=185819408]
 
@@ -190,4 +189,3 @@ surface_connections = Array[ExtResource("16_rvq6o")]([ExtResource("18_lwpgw"), E
 [editable path="HiddenInscription2"]
 [editable path="HiddenInscription3"]
 [editable path="HiddenInscription4"]
-[editable path="World/Interactibles/Lamp"]

@@ -5,9 +5,6 @@ signal item_selected(item_id: String)
 
 const SLOT_COUNT: int = 6
 
-@export var key_icon: Texture2D
-@export var flashlight_icon: Texture2D
-
 @onready var inventory_bar: Control = $InventoryBar
 @onready var slots_container: HBoxContainer = $InventoryBar/Slots
 
@@ -62,7 +59,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if Game.is_dialogue_active():
+	if Game.is_world_input_locked():
 		return
 
 	if event.is_echo():
@@ -128,6 +125,12 @@ func _on_slot_pressed(index: int) -> void:
 	if index < item_ids.size():
 		clicked_id = item_ids[index]
 
+	# Повторный клик по уже выбранному осматриваемому предмету
+	# открывает его крупный план (выбор сохраняется).
+	if clicked_id != "" and clicked_id == selected_item_id:
+		if _open_inspection(clicked_id):
+			return
+
 	# Повторный клик снимает выбор.
 	if selected_item_id == clicked_id:
 		selected_item_id = ""
@@ -136,6 +139,30 @@ func _on_slot_pressed(index: int) -> void:
 
 	refresh_slots()
 	item_selected.emit(selected_item_id)
+
+
+# Открывает режим осмотра для предмета, если у него есть
+# подсцена осмотра в каталоге. Иначе ничего не делает.
+func _open_inspection(item_id: String) -> bool:
+	var definition: ItemDefinition = ItemCatalog.get_item(item_id)
+
+	if definition == null or definition.inspection_scene == null:
+		return false
+
+	var manager: InspectionManager = Game.find_inspection()
+
+	if manager == null:
+		push_warning("Inventory: InspectionManager не найден.")
+		return false
+
+	# Предмет уже в инвентаре — кнопка «Взять» не нужна.
+	var context: Dictionary = definition.make_inspection_context(
+		"", false
+	)
+
+	manager.open(definition.inspection_scene, context)
+
+	return true
 
 
 func has_item(item_id: String) -> bool:
@@ -179,14 +206,10 @@ func get_selected_item() -> String:
 	return selected_item_id
 
 
+# Иконки берутся из каталога предметов (ItemCatalog),
+# поэтому инвентарю не нужно знать список всех вещей.
 func get_item_icon(item_id: String) -> Texture2D:
-	match item_id:
-		"bedroom_key":
-			return key_icon
-		"flashlight":
-			return flashlight_icon
-		_:
-			return null
+	return ItemCatalog.get_item_icon(item_id)
 
 
 func refresh_slots() -> void:

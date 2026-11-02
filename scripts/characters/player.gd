@@ -15,8 +15,8 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	# Блокируем передвижение во время диалога.
-	if Game.is_dialogue_active():
+	# Блокируем передвижение во время диалога и осмотра.
+	if Game.is_world_input_locked():
 		velocity = Vector2.ZERO
 		is_moving = false
 
@@ -57,7 +57,7 @@ func try_interact(
 	interaction_position: Vector2,
 	object: Interactable
 ) -> void:
-	if Game.is_dialogue_active():
+	if Game.is_world_input_locked():
 		return
 
 	if not is_instance_valid(object):

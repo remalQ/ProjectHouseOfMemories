@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/inventory/item_definition.gd" id="1_def"]
+[ext_resource type="Texture2D" path="res://assets/props/note_prop.png" id="2_prop"]
+[ext_resource type="Texture2D" path="res://assets/props/note_detail.png" id="3_detail"]
+[ext_resource type="PackedScene" path="res://scenes/ui/inspection/note_inspection.tscn" id="4_insp"]
+
+[resource]
+resource_name = "old_note"
+script = ExtResource("1_def")
+id = "old_note"
+display_name = "Старая записка"
+description = "Жёлтый листок, исписанный торопливым почерком."
+world_texture = ExtResource("2_prop")
+inventory_icon = ExtResource("2_prop")
+inspection_texture = ExtResource("3_detail")
+inspection_scene = ExtResource("4_insp")

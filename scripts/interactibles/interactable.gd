@@ -36,6 +36,10 @@ func _handle_click(event: InputEvent) -> void:
 	if not _is_clickable():
 		return
 
+	# Во время осмотра/диалога клики в мир не проходят.
+	if Game.is_world_input_locked():
+		return
+
 	var player: Player = Game.find_player()
 
 	if player == null:

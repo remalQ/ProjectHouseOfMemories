@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://3pccgyangxwe"]
+
+[ext_resource type="Script" uid="uid://b1slwv1muw0ff" path="res://scripts/interactibles/inspectable_pickup.gd" id="1_pickup"]
+[ext_resource type="Texture2D" uid="uid://c6eq607g1ik67" path="res://assets/props/note_prop.png" id="2_prop"]
+[ext_resource type="Resource" path="res://resources/items/old_note.tres" id="3_def"]
+[ext_resource type="Script" uid="uid://b5lfrm6t2bhda" path="res://scripts/ui/interaction_label.gd" id="4_label"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_note"]
+size = Vector2(1000, 1000)
+
+[node name="OldNote" type="Area2D" unique_id=2016334060]
+scale = Vector2(0.05, 0.05)
+script = ExtResource("1_pickup")
+item_definition = ExtResource("3_def")
+instance_id = "bedroom.old_note_01"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1306170360]
+self_modulate = Color(1, 1, 1, 0.3529412)
+texture = ExtResource("2_prop")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2145373308]
+shape = SubResource("RectangleShape2D_note")
+
+[node name="InteractionPoint" type="Marker2D" parent="." unique_id=663800503]
+position = Vector2(-59.999992, 8779.999)
+
+[node name="InteractionLabel2" type="Label" parent="." unique_id=87138985 node_paths=PackedStringArray("interaction_point")]
+offset_left = -9180.001
+offset_top = -5800.0
+offset_right = -8965.001
+offset_bottom = -5769.0
+scale = Vector2(35, 35)
+theme_override_colors/font_color = Color(0.7490196, 0.7490196, 0.7490196, 0.79607844)
+theme_override_colors/font_outline_color = Color(0.07683582, 0.07683582, 0.07683582, 0.83137256)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 22
+text = "Осмотреть записку"
+horizontal_alignment = 1
+script = ExtResource("4_label")
+interaction_point = NodePath("../InteractionPoint")

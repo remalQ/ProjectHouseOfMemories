@@ -46,7 +46,7 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if Game.is_dialogue_active():
+	if Game.is_world_input_locked():
 		return
 
 	if event.is_action_pressed("toggle_flashlight") and not event.is_echo():

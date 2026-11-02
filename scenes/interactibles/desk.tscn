@@ -60,10 +60,10 @@ occluder_light_mask = 2
 polygon = PackedVector2Array(186, -69, -203, -68, -204, -28, 205, -27)
 
 [node name="InteractionLabel" type="Label" parent="." unique_id=1398457002 node_paths=PackedStringArray("interaction_point")]
-offset_left = 80.0
-offset_top = -366.0
-offset_right = 256.0
-offset_bottom = -335.0
+offset_left = -208.0
+offset_top = -375.0
+offset_right = -32.0
+offset_bottom = -344.0
 theme_override_colors/font_color = Color(0.7490196, 0.7490196, 0.7490196, 0.79607844)
 theme_override_colors/font_outline_color = Color(0.07683582, 0.07683582, 0.07683582, 0.83137256)
 theme_override_constants/outline_size = 4
@@ -77,23 +77,23 @@ interaction_point = NodePath("../InteractionPoint")
 visible = false
 polygon = PackedVector2Array(177, -281, 207, -257, -211, -256, -181, -281)
 script = ExtResource("4_tm3w8")
-light_profile = ExtResource("6_prof")
 spot_shape = Vector2(1.2, 0.5)
 brightness_multiplier = 1.15
+light_profile = ExtResource("6_prof")
 
 [node name="FrontLightSurface" type="Polygon2D" parent="." unique_id=775518450]
 visible = false
 polygon = PackedVector2Array(-201, -239, -211, -240, -211, -256, 207, -257, 207, -240, 202.37398, -239.98431, 201, -25, 186, -25, 187, -239, -87, -239, -87, -28, -201, -28)
 script = ExtResource("4_tm3w8")
-light_profile = ExtResource("6_prof")
 brightness_multiplier = 0.95
+light_profile = ExtResource("6_prof")
 
 [node name="InsideLightSurface" type="Polygon2D" parent="." unique_id=979127896]
 visible = false
 polygon = PackedVector2Array(-87, -28, -75, -58, -75, -198, 165, -198, 164, -65, 176, -64, 176, -48, 178, -46, 186, -46, 187, -239, -87, -239)
 script = ExtResource("4_tm3w8")
-light_profile = ExtResource("6_prof")
 brightness_multiplier = 0.9
+light_profile = ExtResource("6_prof")
 
 [node name="FlashlightShadowCaster" type="Node2D" parent="." unique_id=1919596155]
 

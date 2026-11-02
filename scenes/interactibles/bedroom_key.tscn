@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://bp5y2ygpn0ur0"]
 
-[ext_resource type="Script" uid="uid://pp10wa3a4rh2" path="res://scripts/interactibles/bedroom_key.gd" id="1_gqsi3"]
+[ext_resource type="Script" path="res://scripts/interactibles/pickup_item.gd" id="1_gqsi3"]
 [ext_resource type="Texture2D" uid="uid://qrjgyvtf0tcc" path="res://assets/items/key.png" id="1_uyvch"]
+[ext_resource type="Resource" path="res://resources/items/bedroom_key.tres" id="3_def"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ojvcu"]
 size = Vector2(1136, 1124)
@@ -9,6 +10,8 @@ size = Vector2(1136, 1124)
 [node name="BedroomKey" type="Area2D" unique_id=1203308119]
 scale = Vector2(0.03, 0.03)
 script = ExtResource("1_gqsi3")
+item_definition = ExtResource("3_def")
+instance_id = "bedroom.hidden_key_01"
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=674891938]
 self_modulate = Color(1, 1, 1, 0.3529412)
